@@ -1,12 +1,46 @@
-﻿<Window x:Class="WpfLabs.MainWindow"
+﻿<Window x:Name="MyWindow"
+        x:Class="Wpf_lab1.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:WpfLabs"
+        xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="MainWindow"
+        Width="610"
+        Height="610">
+    <Grid x:Name="MyGrid"
+          KeyDown="OnKeyDown" MouseDown="OnMouseDown" MouseMove="OnMouseMove" MouseUp="OnMouseUp">
+        <glWpfControl:GLWpfControl
+            x:Name="OpenTkControl"
+            Render="OpenTkControl_OnRender" />
+        <TextBlock  HorizontalAlignment="Left" Height="165" Margin="26,25,0,0" TextWrapping="Wrap"
+                   VerticalAlignment="Top" Width="154" ><Run Text="0-Выделение"/><LineBreak/><Run Text="1-Точки"/><LineBreak/><Run Text="2-Линии"/><LineBreak/><Run Text="3-Треугольники"/><LineBreak/><Run Text="4-Ломанные"/><LineBreak/><Run Text="8-Перем.выд"/><LineBreak/><Run Text="9-Перем.выд.верш."/><LineBreak/><Run Text="Z-Удал.посл. "/><LineBreak/><Run Text="Del-Удал.выд."/><LineBreak/><Run Text="Back-Удал.прим.выб.типа"/></TextBlock>
+
+        <Grid.ContextMenu>
+            <ContextMenu>
+                <MenuItem Header="Цвет">
+                    <MenuItem x:Name="Rеd" Header="Красный" Click="OnClickColor" />
+                    <MenuItem x:Name="Blue" Header="Синий" Click="OnClickColor" />
+                    <MenuItem x:Name="White" Header="Белый" Click="OnClickColor" />
+                    <MenuItem x:Name="Black" Header="Черный" Click="OnClickColor" />
+                    <MenuItem x:Name="Green" Header="Зеленый" Click="OnClickColor" />
+                    <MenuItem x:Name="Wheat" Header="Бежевый" Click="OnClickColor" />
+                </MenuItem>
+
+                <MenuItem Header="Удалить">
+                    <MenuItem x:Name="Ctrl_Z" Header="Последний" Click="OnClickDel" />
+                    <MenuItem x:Name="Del" Header="Выбранные" Click="OnClickDel" />
+                    <MenuItem x:Name="Backspace" Header="Выбранного типа">
+                        <MenuItem x:Name="Dot" Header="Точки" Click="OnClickDel"/>
+                        <MenuItem x:Name="Line" Header="Линии" Click="OnClickDel"/>
+                        <MenuItem x:Name="Trio" Header="Треугольники" Click="OnClickDel"/>
+                        <MenuItem x:Name="Loman" Header="Ломанные" Click="OnClickDel"/>
+
+                    </MenuItem>
+                </MenuItem>
+            </ContextMenu>
+        </Grid.ContextMenu>
 
     </Grid>
 </Window>

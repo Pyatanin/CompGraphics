@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
-using OpenTK.Windowing.Common;
+using Wpf_lab1;
 
 namespace WpfLabs
 {
