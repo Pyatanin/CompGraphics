@@ -5,28 +5,21 @@ namespace WpfLabs.Model;
 
 public class Primitive
 {
-    public Color4 color = Color4.White;
-    public List<MyPoint> coordinates;
-    public bool selection = false;
-    public int type = 0;
+    public readonly List<MyPoint> Coordinates;
+    public Color4 Color = Color4.White;
+    public bool Selection;
+    public int Type;
 
-    public Primitive(int Type, Color4 Color, bool Selection)
+    public Primitive(int type, List<MyPoint> coordinates, Color4 color, bool selection)
     {
-        type = Type;
-        color = Color;
-        selection = Selection;
+        Type = type;
+        Coordinates = coordinates;
+        Color = color;
+        Selection = selection;
     }
 
-    public Primitive(int Type, List<MyPoint> Coordinates, Color4 Color, bool Selection)
+    public void AddPrimitive(MyPoint myPoint)
     {
-        type = Type;
-        coordinates = Coordinates;
-        color = Color;
-        selection = Selection;
-    }
-
-    public void Primitive_add(MyPoint myPoint)
-    {
-        coordinates.Add(myPoint);
+        Coordinates.Add(myPoint);
     }
 }
