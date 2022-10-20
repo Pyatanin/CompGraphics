@@ -36,9 +36,8 @@
                     <MenuItem Header="Выбранного типа">
                         <MenuItem x:Name="Dot" Header="Точки" Click="OnClickDel"/>
                         <MenuItem x:Name="Line" Header="Линии" Click="OnClickDel"/>
-                        <MenuItem x:Name="Trio" Header="Треугольники" Click="OnClickDel"/>
-                        <MenuItem x:Name="Loman" Header="Ломаные" Click="OnClickDel"/>
-
+                        <MenuItem x:Name="Triangle" Header="Треугольники" Click="OnClickDel"/>
+                        <MenuItem x:Name="LineStrip" Header="Ломаные" Click="OnClickDel"/>
                     </MenuItem>
                 </MenuItem>
             </ContextMenu>

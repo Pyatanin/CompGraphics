@@ -422,17 +422,29 @@ public sealed partial class MainWindow
             Primitives.ListPrimitive.Remove(Primitives.ListPrimitive.Last());
         }
 
-        if (Equals(sender, Dot) || Equals(sender, Line) || Equals(sender, Trio) || Equals(sender, Loman))
+        if (Equals(sender, Dot) || Equals(sender, Line) || Equals(sender, Triangle) || Equals(sender, LineStrip))
         {
             var type = 0;
             if (Equals(sender, Dot))
+            {
                 type = 1;
+            }
+
             if (Equals(sender, Line))
+            {
                 type = 2;
-            if (Equals(sender, Trio))
+            }
+
+            if (Equals(sender, Triangle))
+            {
                 type = 3;
-            if (Equals(sender, Loman))
+            }
+
+            if (Equals(sender, LineStrip))
+            {
                 type = 4;
+            }
+
             for (var i = Primitives.ListPrimitive.Count - 1; i >= 0; i--)
             {
                 if (Primitives.ListPrimitive[i].Type == type)
