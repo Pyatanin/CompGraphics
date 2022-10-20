@@ -15,7 +15,7 @@
             x:Name="OpenTkControl"
             Render="OpenTkControl_OnRender" />
         <TextBlock  HorizontalAlignment="Left" Height="165" Margin="26,25,0,0" TextWrapping="Wrap"
-                   VerticalAlignment="Top" Width="154" ><Run Text="0-Выделение"/><LineBreak/><Run Text="1-Точки"/><LineBreak/><Run Text="2-Линии"/><LineBreak/><Run Text="3-Треугольники"/><LineBreak/><Run Text="4-Ломанные"/><LineBreak/><Run Text="8-Перем.выд"/><LineBreak/><Run Text="9-Перем.выд.верш."/><LineBreak/><Run Text="Z-Удал.посл. "/><LineBreak/><Run Text="Del-Удал.выд."/><LineBreak/><Run Text="Back-Удал.прим.выб.типа"/></TextBlock>
+                   VerticalAlignment="Top" Width="154" ><Run Text="0-Выделение"/><LineBreak/><Run Text="1-Точки"/><LineBreak/><Run Text="2-Линии"/><LineBreak/><Run Text="3-Треугольники"/><LineBreak/><Run Text="4-Ломаная"/><LineBreak/><Run Text="8-Перем.выд"/><LineBreak/><Run Text="9-Перем.выд.верш."/><LineBreak/><Run Text="Z-Удал.посл. "/><LineBreak/><Run Text="Del-Удал.выд."/><LineBreak/><Run Text="Back-Удал.прим.выб.типа"/></TextBlock>
         <TextBlock x:Name="MyTextBlock" HorizontalAlignment="Right" Height="165" Margin="26,25,0,0" TextWrapping="Wrap"
                     VerticalAlignment="Top" Width="154" />
 
@@ -33,11 +33,11 @@
                 <MenuItem Header="Удалить">
                     <MenuItem x:Name="Ctrl_Z" Header="Последний" Click="OnClickDel" />
                     <MenuItem x:Name="Del" Header="Выбранные" Click="OnClickDel" />
-                    <MenuItem x:Name="Backspace" Header="Выбранного типа">
+                    <MenuItem Header="Выбранного типа">
                         <MenuItem x:Name="Dot" Header="Точки" Click="OnClickDel"/>
                         <MenuItem x:Name="Line" Header="Линии" Click="OnClickDel"/>
                         <MenuItem x:Name="Trio" Header="Треугольники" Click="OnClickDel"/>
-                        <MenuItem x:Name="Loman" Header="Ломанные" Click="OnClickDel"/>
+                        <MenuItem x:Name="Loman" Header="Ломаные" Click="OnClickDel"/>
 
                     </MenuItem>
                 </MenuItem>

@@ -48,8 +48,16 @@ public sealed partial class MainWindow
                 if (MyVar.Mode == 4 && Primitives.ListPrimitive[^1].Coordinates.Count != 0)
                 {
                     Primitives.ListPrimitive[^1].Selection = false;
-                    Primitives.ListPrimitive.Add(new Primitive(MyVar.Mode, new List<MyPoint>(), MyVar.StandardColor4,
-                        true));
+                    Primitives.ListPrimitive.Add
+                    (
+                        new Primitive
+                        (
+                            MyVar.Mode,
+                            new List<MyPoint>(),
+                            MyVar.StandardColor4,
+                            true
+                        )
+                    );
                 }
 
                 MyVar.Mode = 0;
