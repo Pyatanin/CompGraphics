@@ -71,7 +71,7 @@ namespace WpfLabs
                     GL.End();
                 }
 
-                foreach (var point in p.Coordinates.Where(point => point.Selection))
+                foreach (var point in p.Coordinates.Where(point => point.IsSelected))
                 {
                     GL.PointSize(Var.SelectionPointSize);
                     GL.Color4(MainWindow.MyVar.SelectionPointColor4);

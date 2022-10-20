@@ -100,7 +100,6 @@ public sealed partial class MainWindow
             }
             case Key.Delete:
             {
-                Console.WriteLine("Delete");
                 for (var i = Primitives.ListPrimitive.Count - 1; i >= 0; i--)
                 {
                     if (Primitives.ListPrimitive[i].Selection)
@@ -173,13 +172,13 @@ public sealed partial class MainWindow
                     {
                         if (coord.Coordinates.X < rDown.X && coord.Coordinates.Y > rDown.Y)
                         {
-                            coord.Selection = !coord.Selection;
+                            coord.IsSelected = !coord.IsSelected;
                         }
                         else
-                            coord.Selection = false;
+                            coord.IsSelected = false;
                     }
                     else
-                        coord.Selection = false;
+                        coord.IsSelected = false;
                 }
             }
         }
@@ -265,12 +264,21 @@ public sealed partial class MainWindow
             {
                 var coord = new Vector2(MyVar.XPosition, MyVar.YPosition);
                 var point = new MyPoint(coord, false);
-                Primitives.ListPrimitive[^1].AddPrimitive(point);
+                Primitives.ListPrimitive[^1].AddToPrimitive(point);
             }
             else
             {
-                Primitives.ListPrimitive.Add(new Primitive(MyVar.Mode, new List<MyPoint>(), MyVar.StandardColor4,
-                    true));
+                Primitives.ListPrimitive.Add
+                (
+                    new Primitive
+                    (
+                        MyVar.Mode, 
+                        new List<MyPoint>(), 
+                        MyVar.StandardColor4, 
+                        true
+                    )
+                );
+                
                 if (Primitives.ListPrimitive.Count != 0)
                 {
                     Primitives.ListPrimitive[^2].Selection = false;
@@ -278,7 +286,7 @@ public sealed partial class MainWindow
 
                 var coord = new Vector2(MyVar.XPosition, MyVar.YPosition);
                 var point = new MyPoint(coord, false);
-                Primitives.ListPrimitive[^1].AddPrimitive(point);
+                Primitives.ListPrimitive[^1].AddToPrimitive(point);
             }
         }
     }
@@ -296,11 +304,11 @@ public sealed partial class MainWindow
                     {
                         foreach (var coord in p.Coordinates)
                         {
-                            if (!coord.Selection) continue;
+                            if (!coord.IsSelected) continue;
 
                             coord.Coordinates.X = MyVar.XPosition;
                             coord.Coordinates.Y = MyVar.YPosition;
-                            coord.Selection = false;
+                            coord.IsSelected = false;
                         }
                     }
                 }
@@ -318,7 +326,7 @@ public sealed partial class MainWindow
             {
                 coord.Coordinates.X -= MyVar.DeltaX - MyVar.XPosition;
                 coord.Coordinates.Y -= MyVar.DeltaY - MyVar.YPosition;
-                coord.Selection = false;
+                coord.IsSelected = false;
             }
         }
     }
@@ -338,7 +346,7 @@ public sealed partial class MainWindow
                 {
                     if (!p.Selection) continue;
 
-                    foreach (var coord in p.Coordinates.Where(coord => coord.Selection))
+                    foreach (var coord in p.Coordinates.Where(coord => coord.IsSelected))
                     {
                         coord.Coordinates.X = MyVar.XPosition;
                         coord.Coordinates.Y = MyVar.YPosition;

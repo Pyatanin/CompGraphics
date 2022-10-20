@@ -7,7 +7,6 @@ public class Var
     public const float SelectionPointSize = 5.0f;
     public const float SelectionSize = 6.0f;
 
-
     public const float StandardSize = 3.0f;
     public float DeltaX = 0.0f;
     public float DeltaY = 0.0f;

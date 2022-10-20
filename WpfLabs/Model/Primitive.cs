@@ -18,7 +18,7 @@ public class Primitive
         Selection = selection;
     }
 
-    public void AddPrimitive(MyPoint myPoint)
+    public void AddToPrimitive(MyPoint myPoint)
     {
         Coordinates.Add(myPoint);
     }
