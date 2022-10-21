@@ -29,7 +29,7 @@ public sealed partial class MainWindow
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
         ExampleScene.Render();
-        MyTextBlock.Text = $"{MyWindow.Height};{MyWindow.Width}";
+        MyTextBlock.Text = $"{MyWindow.Width};{MyWindow.Height}";
         MyGrid.Height = MyWindow.Height;
         MyGrid.Width = MyWindow.Width;
     }
@@ -272,13 +272,13 @@ public sealed partial class MainWindow
                 (
                     new Primitive
                     (
-                        MyVar.Mode, 
-                        new List<MyPoint>(), 
-                        MyVar.StandardColor4, 
+                        MyVar.Mode,
+                        new List<MyPoint>(),
+                        MyVar.StandardColor4,
                         true
                     )
                 );
-                
+
                 if (Primitives.ListPrimitive.Count != 0)
                 {
                     Primitives.ListPrimitive[^2].Selection = false;
@@ -430,25 +430,25 @@ public sealed partial class MainWindow
             Primitives.ListPrimitive.Remove(Primitives.ListPrimitive.Last());
         }
 
-        if (Equals(sender, Dot) || Equals(sender, Line) || Equals(sender, Triangle) || Equals(sender, LineStrip))
+        if (Equals(sender, DotDel) || Equals(sender, Line) || Equals(sender, Triangle) || Equals(sender, LineStrip))
         {
             var type = 0;
-            if (Equals(sender, Dot))
+            if (Equals(sender, DotDel))
             {
                 type = 1;
             }
 
-            if (Equals(sender, Line))
+            if (Equals(sender, LineDel))
             {
                 type = 2;
             }
 
-            if (Equals(sender, Triangle))
+            if (Equals(sender, TriangleDel))
             {
                 type = 3;
             }
 
-            if (Equals(sender, LineStrip))
+            if (Equals(sender, LineStripDel))
             {
                 type = 4;
             }
@@ -472,5 +472,67 @@ public sealed partial class MainWindow
                 }
             }
         }
+    }
+
+    private void OnClickType(object sender, RoutedEventArgs e)
+    {
+        if (Equals(sender, Dot))
+        {
+            MyVar.Mode = 1;
+        }
+
+        if (Equals(sender, Line))
+        {
+            MyVar.Mode = 2;
+        }
+
+        if (Equals(sender, Triangle))
+        {
+            MyVar.Mode = 3;
+        }
+
+        if (Equals(sender, LineStrip))
+        {
+            MyVar.Mode = 4;
+        }
+
+        if (Equals(sender, Select))
+        {
+            MyVar.Mode = 0;
+        }
+
+        if (Equals(sender, PointMovement))
+        {
+            MyVar.Mode = 9;
+        }
+
+        if (Equals(sender, ObjectMovement))
+        {
+            MyVar.Mode = 8;
+        }
+
+        if (Equals(sender, Space))
+        {
+            if (MyVar.Mode == 4 && Primitives.ListPrimitive[^1].Coordinates.Count != 0)
+            {
+                Primitives.ListPrimitive.Add
+                (new Primitive
+                    (
+                        MyVar.Mode,
+                        new List<MyPoint>(),
+                        MyVar.StandardColor4,
+                        true
+                    )
+                );
+            }
+        }
+    }
+
+    private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
+    {
+        MyWindow.Height = e.NewSize.Height;
+        MyWindow.Width = e.NewSize.Width;
+        MyGrid.Height = MyWindow.Height;
+        MyGrid.Width = MyWindow.Width;
     }
 }

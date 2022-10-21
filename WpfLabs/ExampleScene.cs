@@ -47,8 +47,8 @@ namespace WpfLabs
 
                 foreach (var point in p.Coordinates)
                 {
-                    var x = 2 * point.Coordinates.X / MainWindow.MyVar.Height;
-                    var y = 2 * point.Coordinates.Y / MainWindow.MyVar.Width;
+                    var x = 2 * point.Coordinates.X / MainWindow.MyVar.Width;
+                    var y = 2 * point.Coordinates.Y / MainWindow.MyVar.Height;
                     GL.Vertex2(x, y);
                 }
 
@@ -63,8 +63,8 @@ namespace WpfLabs
                     {
                         GL.Vertex2
                         (
-                            2 * point.Coordinates.X / MainWindow.MyVar.Height,
-                            2 * point.Coordinates.Y / MainWindow.MyVar.Width
+                            2 * point.Coordinates.X / MainWindow.MyVar.Width,
+                            2 * point.Coordinates.Y / MainWindow.MyVar.Height
                         );
                     }
 
@@ -78,8 +78,8 @@ namespace WpfLabs
                     GL.Begin(PrimitiveType.Points);
                     GL.Vertex2
                     (
-                        2 * point.Coordinates.X / MainWindow.MyVar.Height,
-                        2 * point.Coordinates.Y / MainWindow.MyVar.Width
+                        2 * point.Coordinates.X / MainWindow.MyVar.Width,
+                        2 * point.Coordinates.Y / MainWindow.MyVar.Height
                     );
                     GL.End();
                 }
