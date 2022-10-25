@@ -6,7 +6,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
         mc:Ignorable="d"
-        Title="Lab_1"
+        Title="Lab_1_"
         Height="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}}"
         Width="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenWidth}}"
         MaxHeight="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenHeight}}"
