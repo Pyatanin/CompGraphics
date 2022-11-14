@@ -39,8 +39,15 @@ namespace WpfLabs
 
             GL.Enable(EnableCap.Normalize);
 
+            GL.Enable(EnableCap.Texture2D);
+            GL.GenTextures(1, out MyVar.texture);
+            GL.BindTexture(TextureTarget.Texture2D, MyVar.texture);
+
+
             CreateGrani();
+            // TexturFool();
         }
+
 
         public static void WmSize(Grid MyGrid, MainWindow MyWindow)
         {
@@ -109,23 +116,31 @@ namespace WpfLabs
             MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
         }
 
-        public static void TexturFool()
-        {
-            int w = 2, h = 2;
-        }
+        // public static void TexturFool()
+        // {
+        //     MyVar.MyTexure = new Texture2D("C:/Users/pyata/Desktop/crate.bmp");
+        //     
+        // }
 
         public static void ShowFool()
         {
+            // GL.Enable(EnableCap.Texture2D);
+            // MyVar.MyTexure.Bind();
+
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
+            //GL.EnableClientState(ArrayCap.TextureCoordArray);
+
 
             GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.floor);
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.norm);
+            //GL.TexCoordPointer(2,TexCoordPointerType.Float,0, MyVar.TexFloor);
             GL.Color3(Color.Green);
             GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
 
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
+            //GL.DisableClientState(ArrayCap.TextureCoordArray);
         }
 
         public static void Show3d()

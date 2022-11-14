@@ -9,7 +9,9 @@ public class Var
     public double constSpeed = 0.4;
     public double constSpeedRotation = 2;
     public Point Cur = new Point(800, 600);
+
     public float[] floor = { 10, 10, -0.1f, 10, -10, -0.1f, -10, -10, -0.1f, -10, 10, -0.1f };
+    // public Texture2D MyTexure;
 
     public List<List<float>> Grans = new List<List<float>>();
 
@@ -28,6 +30,7 @@ public class Var
 
 
     public bool Object = false;
+
     public bool Orthogonal = false;
 
     public bool Perspective = true;
@@ -58,10 +61,18 @@ public class Var
         -1, 1,
     };
 
+    // public bool Perspective = false;
+    // public bool Orthogonal = true;
     public bool Skeleton = false;
 
 
     public double speed = 0;
+
+    //public float[] TexFloor = { 10, 10, 10, -10, -10, -10,  -10, 10, };
+    public float[] TexFloor = { 0, 0, 1, 0, 1, 1, 0, 1, };
+
+
+    public int texture;
     public bool Textures = false;
 
     public List<float> traektoria3D = new List<float>() { 0, 0, 2 };
@@ -73,6 +84,4 @@ public class Var
     public double Yalfa = -10;
 
     public double Zalfa = 0;
-    // public bool Perspective = false;
-    // public bool Orthogonal = true;
 }
