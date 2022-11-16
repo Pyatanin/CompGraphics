@@ -9,12 +9,21 @@ public class Var
     public double constSpeed = 0.4;
     public double constSpeedRotation = 2;
     public Point Cur = new Point(800, 600);
-    public float[] floor = { 10, 10, -0.1f, 10, -10, -0.1f, -10, -10, -0.1f, -10, 10, -0.1f };
+    public float[] floor = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
+
+    public float[] floorCoord =
+    {
+        0, 1,
+        1, 1,
+        1, 0,
+        0, 0
+    };
+
 
     public List<List<float>> Grans = new List<List<float>>();
 
     public float HYU = 0.0f;
-    public float[] Kvadrat = { 1, 1, -0.1f, 1, -1, -0.1f, -1, -1, -0.1f, -1, 1, -0.1f };
+    public float[] Kvadrat = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
 
     public double[] mashtab =
     {
@@ -23,8 +32,8 @@ public class Var
 
 
     public bool MouseSelect = false;
-    public float[] norm = { 1, 1, 3, 1, -1, 3, -1, -1, 3, -1, 1, 3 };
     public bool Normals = false;
+    public float[] normFool = { 10, 10, 10, 10, -10, 10, -10, -10, 10, -10, 10, 10 };
 
 
     public bool Object = false;
@@ -65,7 +74,12 @@ public class Var
     public bool Textures = false;
 
     public List<float> traektoria3D = new List<float>() { 0, 0, 2 };
+
     public double ugol = 0;
+    // public bool Perspective = false;
+    // public bool Orthogonal = true;
+
+    public int vertexBufferId;
 
     public double Xalfa = 0;
 
@@ -73,6 +87,4 @@ public class Var
     public double Yalfa = -10;
 
     public double Zalfa = 0;
-    // public bool Perspective = false;
-    // public bool Orthogonal = true;
 }
