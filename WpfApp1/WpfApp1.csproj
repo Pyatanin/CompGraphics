@@ -8,11 +8,11 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="OpenTK" Version="4.6.7"/>
-        <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.2"/>
-        <None Update="Texture/*.*" CopyToOutputDirectory="PreserveNewest"/>
+        <PackageReference Include="OpenTK" Version="4.6.7" />
+        <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.2" />
+        <None Update="Texture/*.*" CopyToOutputDirectory="PreserveNewest" />
 
-        <PackageReference Include="System.Drawing.Common" Version="7.0.0"/>
+        <PackageReference Include="System.Drawing.Common" Version="7.0.0" />
     </ItemGroup>
 
 </Project>
