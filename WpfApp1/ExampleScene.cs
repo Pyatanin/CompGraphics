@@ -150,74 +150,155 @@ namespace WpfLabs
             MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
         }
 
-        public static void TexturFool()
+        public static void ShowNormal(Vector3 start, Vector3 end)
         {
-            int w = 2, h = 2;
+            GL.LineWidth(10);
+            GL.Color3(Color.Black);
+            GL.Begin(BeginMode.LineLoop);
+
+            GL.Vertex3(start);
+            GL.Vertex3(end);
+
+            GL.End();
+
+            GL.EnableClientState(ArrayCap.VertexArray);
+            GL.Translate(end);
+            GL.Scale(0.05, 0.05, 0.05);
+
+            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.Piramida);
+            GL.DrawArrays(BeginMode.TriangleFan, 0, 6);
+            GL.DisableClientState(ArrayCap.VertexArray);
         }
 
-        public static void ShowFool()
+        public static void ShowFool(bool texture)
         {
-            Texture2D MyTexture = new Texture2D("Texture/1.jpg");
+            Texture2D MyTexture = new Texture2D("Texture/3.jpg");
 
-            //MyVar.vertexBufferId = GL.GenBuffer();
-
-            GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
-            GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
-                BufferUsageHint.StaticDraw);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                    BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.Enable(EnableCap.Texture2D);
+                MyTexture.Bind();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
+            }
 
 
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
-            GL.EnableClientState(ArrayCap.TextureCoordArray);
 
 
-            GL.Enable(EnableCap.Texture2D);
-
-            MyTexture.Bind();
-            GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
             GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.floor);
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
-            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-            MyTexture.UnBind();
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                MyTexture.UnBind();
+            }
 
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
-            GL.DisableClientState(ArrayCap.TextureCoordArray);
+            if (texture)
+            {
+                GL.DisableClientState(ArrayCap.TextureCoordArray);
+            }
         }
 
-        public static void Show3d()
+        public static void Show3d(bool texture)
         {
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
-
+            Texture2D Up = new Texture2D("Texture/Up.jpg");
+            Texture2D Down = new Texture2D("Texture/Down.jpg");
+            Texture2D Side = new Texture2D("Texture/Side.jpg");
             // ОСнование
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, Down.BufferId);
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                    BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.Enable(EnableCap.Texture2D);
+                Down.Bind();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
+            }
+
             GL.PushMatrix();
             GL.VertexPointer(2, VertexPointerType.Float, 0, MyVar.sechenie2D.ToArray());
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.sechenie2D.Count / 2);
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                Down.UnBind();
+            }
+
             GL.PopMatrix();
 
             //Тиражирование
             GL.PushMatrix();
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, Up.BufferId);
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                    BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.Enable(EnableCap.Texture2D);
+                Up.Bind();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
+            }
+
             GL.VertexPointer(2, VertexPointerType.Float, 0, MyVar.sechenie2D.ToArray());
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.Translate(MyVar.traektoria3D[0], MyVar.traektoria3D[1], MyVar.traektoria3D[2]);
             GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.sechenie2D.Count / 2);
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                Up.UnBind();
+            }
+
             GL.PopMatrix();
 
             // Грани
             foreach (var gran in MyVar.Grans)
             {
                 GL.PushMatrix();
+                if (texture)
+                {
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, Side.BufferId);
+                    GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                        BufferUsageHint.StaticDraw);
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                    GL.EnableClientState(ArrayCap.TextureCoordArray);
+                    GL.Enable(EnableCap.Texture2D);
+                    Side.Bind();
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
+                }
+
                 GL.VertexPointer(3, VertexPointerType.Float, 0, gran.ToArray());
                 GL.DrawArrays(BeginMode.TriangleFan, 0, gran.Count / 3);
+                if (texture)
+                {
+                    GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                    Side.UnBind();
+                }
+
                 GL.PopMatrix();
             }
 
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
+            if (texture)
+            {
+                GL.DisableClientState(ArrayCap.TextureCoordArray);
+            }
         }
 
         public static void Karkas()
@@ -316,7 +397,7 @@ namespace WpfLabs
 
 //Солнышко
             GL.PushMatrix();
-            GL.Rotate(MyVar.HYU, 0, 1, 0);
+            GL.Rotate(MyVar.SunRotate, 0, 1, 0);
             float[] pos = new float[] { 0, 0, 1, 0 };
             GL.Light(LightName.Light0, LightParameter.Position, pos);
             GL.Translate(0, 0, 20);
@@ -324,9 +405,11 @@ namespace WpfLabs
             Kvadrat();
             GL.PopMatrix();
 
+            GL.PushMatrix();
             GL.Scale(10, 10, 10);
-
-            ShowFool();
+            GL.Translate(0, 0, -1);
+            ShowFool(MyVar.Textures);
+            GL.PopMatrix();
 
             GL.Scale(MyVar.mashtab[0], MyVar.mashtab[1], MyVar.mashtab[2]);
             GL.Rotate(MyVar.rotate[0], MyVar.rotate[1], MyVar.rotate[2], MyVar.rotate[3]);
@@ -340,20 +423,25 @@ namespace WpfLabs
             if (MyVar.Object)
             {
                 GL.Color3(Color.Orange);
-                Show3d();
+                Show3d(MyVar.Textures);
             }
 
-            if (MyVar.Textures)
-            {
-            }
 
             if (MyVar.Normals)
             {
+                GL.PushMatrix();
+                ShowNormal(new Vector3(1, 1, 2), new Vector3(1, 1, 3));
+                GL.PopMatrix();
+                GL.PushMatrix();
+                ShowNormal(new Vector3(1, -1, 2), new Vector3(1, -1, 3));
+                GL.PopMatrix();
+                // ShowNormal(new Vector3(-1,1,2),new Vector3(-1,1,3));
+                // ShowNormal(new Vector3(-1,-1,2),new Vector3(-1,-1,3));
             }
 
 
             GL.PopMatrix();
-            MyVar.HYU++;
+            MyVar.SunRotate++;
         }
     }
 }
