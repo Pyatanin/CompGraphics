@@ -24,9 +24,9 @@ public class Normal
             CrossVect.Z / CrossVect.Length);
         var dot = Vector3.Dot(new Vector3(1.0f, 0.0f, 0.0f), Vector3.Normalize(EndPoint - StartPoint));
         // мейби +90?
-        XAxisAngle = (float)(Math.Acos(dot) * 180.0 / Math.PI) - 90;
+        XAxisAngle = (float)(Math.Acos(dot) * 180.0 / Math.PI);
         dot = Vector3.Dot(new Vector3(0.0f, 1.0f, 0.0f), Vector3.Normalize(EndPoint - StartPoint));
-        YAxisAngle = (float)(Math.Acos(dot) * 180.0 / Math.PI) - 90;
+        YAxisAngle = (float)(Math.Acos(dot) * 180.0 / Math.PI);
         dot = Vector3.Dot(new Vector3(0.0f, 0.0f, 1.0f), Vector3.Normalize(EndPoint - StartPoint));
         ZAxisAngle = (float)(Math.Acos(dot) * 180.0 / Math.PI);
     }

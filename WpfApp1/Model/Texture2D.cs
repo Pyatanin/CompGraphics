@@ -9,7 +9,7 @@ namespace WpfApp1.Model;
 
 public class Texture2D : IDisposable
 {
-    public Texture2D(string fileName)
+    public Texture2D(string fileName, float[] coord, TextureWrapMode mod)
     {
         Bitmap bitmap = new Bitmap(1, 1);
         if (File.Exists(fileName))
@@ -24,8 +24,8 @@ public class Texture2D : IDisposable
             System.Drawing.Imaging.PixelFormat.Format32bppArgb);
         Id = GL.GenTexture();
         GL.BindTexture(TextureTarget.Texture2D, Id);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)TextureWrapMode.ClampToEdge);
-        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)TextureWrapMode.ClampToEdge);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapS, (int)mod);
+        GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureWrapT, (int)mod);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMinFilter,
             (int)TextureMinFilter.Linear);
         GL.TexParameter(TextureTarget.Texture2D, TextureParameterName.TextureMagFilter,
@@ -35,13 +35,7 @@ public class Texture2D : IDisposable
             PixelType.UnsignedByte, data.Scan0);
         GL.BindTexture(TextureTarget.Texture2D, 0);
         bitmap.UnlockBits(data);
-        Coordinates = new float[]
-        {
-            0, 1,
-            1, 1,
-            1, 0,
-            0, 0
-        };
+        Coordinates = coord;
         BufferId = GL.GenBuffer();
         GL.BindBuffer(BufferTarget.ArrayBuffer, BufferId);
         GL.BufferData(BufferTarget.ArrayBuffer, Coordinates.Length * sizeof(float), Coordinates,

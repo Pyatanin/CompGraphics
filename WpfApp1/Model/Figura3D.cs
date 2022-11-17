@@ -5,18 +5,24 @@ namespace WpfApp1.Model;
 
 public class Figura3D
 {
+    public float[] CoordOverlay;
     public List<float> Footing;
     public List<List<float>> Grans = new List<List<float>>();
     public List<float> Replication;
+
     public List<float> Rotate;
     public List<float> Scale;
     public List<float> Tirag;
 
-    public Figura3D(List<float> footing2D, List<float> tirag, List<float> rotate, List<float> scale)
+
+    public Figura3D(List<float> footing2D, List<float> tirag, List<float> rotate, List<float> scale,
+        float[] coordOverlay)
     {
         Tirag = tirag;
         Rotate = rotate;
         Scale = scale;
+
+        CoordOverlay = coordOverlay;
 
         Footing = new List<float>();
         Replication = new List<float>();
@@ -29,7 +35,7 @@ public class Figura3D
                 Footing.Add(0);
             }
 
-            for (int i = 0; i < footing2D.Count; i += 2)
+            for (int i = -2 + footing2D.Count; i >= 0; i -= 2)
             {
                 Replication.Add(scale[0] * (footing2D[i] + tirag[0]));
                 Replication.Add(scale[1] * (footing2D[i + 1] + tirag[1]));
@@ -38,14 +44,14 @@ public class Figura3D
         }
         else
         {
-            for (int i = -1 + footing2D.Count; i >= 0; i -= 2)
+            for (int i = -2 + footing2D.Count; i >= 0; i -= 2)
             {
                 Footing.Add(scale[0] * footing2D[i]);
                 Footing.Add(scale[1] * footing2D[i + 1]);
                 Footing.Add(0);
             }
 
-            for (int i = 0; i < footing2D.Count / 2; i += 2)
+            for (int i = 0; i < footing2D.Count; i += 2)
             {
                 Replication.Add(scale[0] * (footing2D[i] + tirag[0]));
                 Replication.Add(scale[1] * (footing2D[i + 1] + tirag[1]));
@@ -78,16 +84,18 @@ public class Figura3D
         Grans.Last().Add(scale[1] * footing2D[1]);
         Grans.Last().Add(0);
 
-        Grans.Last().Add(scale[0] * footing2D[^2]);
-        Grans.Last().Add(scale[1] * footing2D[^1]);
-        Grans.Last().Add(0);
+
+        Grans.Last().Add(scale[0] * footing2D[0] + tirag[0]);
+        Grans.Last().Add(scale[1] * footing2D[1] + tirag[1]);
+        Grans.Last().Add(scale[2] * tirag[2]);
+
 
         Grans.Last().Add(scale[0] * footing2D[^2] + tirag[0]);
         Grans.Last().Add(scale[1] * footing2D[^1] + tirag[1]);
         Grans.Last().Add(scale[2] * tirag[2]);
 
-        Grans.Last().Add(scale[0] * footing2D[0] + tirag[0]);
-        Grans.Last().Add(scale[1] * footing2D[1] + tirag[1]);
-        Grans.Last().Add(scale[2] * tirag[2]);
+        Grans.Last().Add(scale[0] * footing2D[^2]);
+        Grans.Last().Add(scale[1] * footing2D[^1]);
+        Grans.Last().Add(0);
     }
 }
