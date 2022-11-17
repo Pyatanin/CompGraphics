@@ -148,6 +148,16 @@ public sealed partial class MainWindow
             else
                 MyVar.Normals = true;
         }
+
+        if (Equals(sender, Dis))
+        {
+            MyVar.NormalDis = true;
+        }
+
+        if (Equals(sender, En))
+        {
+            MyVar.NormalEn = true;
+        }
     }
 
     [StructLayout(LayoutKind.Sequential)]

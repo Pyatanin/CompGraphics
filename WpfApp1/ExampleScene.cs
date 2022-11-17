@@ -14,16 +14,18 @@ namespace WpfLabs
     {
         public static void Ready()
         {
-            GL.MatrixMode(MatrixMode.Projection);
-            GL.LoadIdentity();
             if (MyVar.Perspective)
             {
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadIdentity();
                 GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
                 MyVar.Perspective = false;
             }
 
             if (MyVar.Orthogonal)
             {
+                GL.MatrixMode(MatrixMode.Projection);
+                GL.LoadIdentity();
                 GL.Ortho(-10, 10, -10, 10, 10, -10);
                 MyVar.Orthogonal = false;
             }
@@ -140,15 +142,6 @@ namespace WpfLabs
                     normal.ZAxisAngle);
                 GL.PopMatrix();
             }
-
-            // var normalGran = MyVar.GranNormals[0];
-            // foreach (var normal in normalGran.Normals)
-            // {
-            //     GL.PushMatrix();
-            //     ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
-            //         normal.ZAxisAngle);
-            //     GL.PopMatrix();
-            // }
 
             foreach (var normalGran in MyVar.GranNormals)
             {
@@ -268,7 +261,7 @@ namespace WpfLabs
 
             GL.PushMatrix();
             GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Footing.ToArray());
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
+            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.FootingNormals.arrayNormals);
             GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Footing.Count / 3);
             if (texture)
             {
@@ -294,7 +287,7 @@ namespace WpfLabs
             }
 
             GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Replication.ToArray());
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
+            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.ReplicationNormals.arrayNormals);
             GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Replication.Count / 3);
             if (texture)
             {
@@ -305,6 +298,7 @@ namespace WpfLabs
             GL.PopMatrix();
 
             // Грани
+            var i = 0;
             foreach (var gran in MyVar.MyFigura3D.Grans)
             {
                 GL.PushMatrix();
@@ -322,6 +316,8 @@ namespace WpfLabs
                 }
 
                 GL.VertexPointer(3, VertexPointerType.Float, 0, gran.ToArray());
+                GL.NormalPointer(NormalPointerType.Float, 0, MyVar.GranNormals[i].arrayNormals);
+
                 GL.DrawArrays(BeginMode.TriangleFan, 0, gran.Count / 3);
                 if (texture)
                 {
@@ -330,6 +326,7 @@ namespace WpfLabs
                 }
 
                 GL.PopMatrix();
+                i++;
             }
 
             GL.DisableClientState(ArrayCap.VertexArray);
@@ -355,9 +352,9 @@ namespace WpfLabs
 
             GL.Begin(BeginMode.LineLoop);
 
-            for (int i = 0; i < MyVar.MyFigura3D.Replication.Count / 2; i++)
+            for (int i = 0; i < MyVar.MyFigura3D.Replication.Count / 3; i++)
             {
-                var dot = MyVar.MyFigura3D.Replication.GetRange(2 * i, 2);
+                var dot = MyVar.MyFigura3D.Replication.GetRange(3 * i, 3);
                 GL.Vertex3(dot[0] + MyVar.traektoria3D[0], dot[1] + MyVar.traektoria3D[1], MyVar.traektoria3D[2]);
             }
 
@@ -387,10 +384,20 @@ namespace WpfLabs
             }
 
             MyVar.ugol = -MyVar.Zalfa / 180 * Math.PI;
-            GL.Rotate(-MyVar.Xalfa, 1, 0, 0);
-            GL.Rotate(-MyVar.Zalfa, 0, 0, 1);
 
-            GL.Translate(-MyVar.pos.X, -MyVar.pos.Y, MyVar.Yalfa);
+            if (MyVar.Mouse)
+            {
+                GL.Rotate(-MyVar.Xalfa, 1, 0, 0);
+                GL.Rotate(-MyVar.Zalfa, 0, 0, 1);
+                GL.Translate(-MyVar.pos.X, -MyVar.pos.Y, MyVar.Yalfa);
+            }
+            else
+            {
+                GL.Rotate(MyVar.Xalfa, 1, 0, 0);
+                GL.Rotate(MyVar.Zalfa, 0, 0, 1);
+                GL.Translate(MyVar.pos.X, MyVar.pos.Y, MyVar.Yalfa);
+            }
+
             MyVar.speed = 0;
         }
 
@@ -422,17 +429,38 @@ namespace WpfLabs
 
             if (MyVar.Perspective)
             {
+                GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
                 GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
                 MyVar.Perspective = false;
+                GL.MatrixMode(MatrixMode.Modelview);
+
+                MyVar.Mouse = true;
             }
 
             if (MyVar.Orthogonal)
             {
+                GL.MatrixMode(MatrixMode.Projection);
                 GL.LoadIdentity();
-                GL.Ortho(-10, 10, -10, 10, 10, -10);
+                GL.Ortho(-30, 30, -30, 30, 30, -30);
                 MyVar.Orthogonal = false;
+                GL.MatrixMode(MatrixMode.Modelview);
+
+                MyVar.Mouse = false;
             }
+
+            if (MyVar.NormalDis)
+            {
+                GL.Disable(EnableCap.Normalize);
+                MyVar.NormalDis = false;
+            }
+
+            if (MyVar.NormalEn)
+            {
+                GL.Enable(EnableCap.Normalize);
+                MyVar.NormalEn = false;
+            }
+
 
             //Солнышко
             GL.PushMatrix();

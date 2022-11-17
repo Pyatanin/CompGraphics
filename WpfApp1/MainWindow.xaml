@@ -36,6 +36,11 @@
                     <MenuItem x:Name="Orthogonal" Header="Ортогональная" Click="OnClickColor" />
                     <MenuItem x:Name="Perspective" Header="Перспективная " Click="OnClickColor" />
                     
+                    <MenuItem Header="Нормализация">
+                        <MenuItem x:Name="Dis" Header="Отключить нормализацию" Click="OnClickColor" />
+                        <MenuItem x:Name="En" Header="Включить нормализацию" Click="OnClickColor" />
+                    </MenuItem>
+                    
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

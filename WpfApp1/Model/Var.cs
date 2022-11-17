@@ -19,6 +19,8 @@ public class Var
 
     public float[] Kvadrat = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
 
+    public bool Mouse = true;
+
 
     public bool MouseSelect = false;
 
@@ -68,7 +70,11 @@ public class Var
             10, 10,
         });
 
+
+    public bool NormalDis = false;
+    public bool NormalEn = false;
     public bool Normals = false;
+
     public float[] normFool = { 10, 10, 10, 10, -10, 10, -10, -10, 10, -10, 10, 10 };
 
 
@@ -76,6 +82,7 @@ public class Var
 
     public bool Orthogonal = false;
     public bool Perspective = true;
+
 
     public float[] Piramida =
     {
