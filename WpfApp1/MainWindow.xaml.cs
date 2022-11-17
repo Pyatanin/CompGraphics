@@ -5,7 +5,7 @@ using System.Windows.Input;
 using OpenTK.Wpf;
 using WpfApp1.Model;
 
-namespace WpfLabs;
+namespace WpfApp1;
 
 /// <summary>
 ///     Interaction logic for MainWindow.xaml
@@ -13,7 +13,8 @@ namespace WpfLabs;
 public sealed partial class MainWindow
 {
     public static Var MyVar = new();
-
+    public static readonly RenderingSettings RenderingSettings = new();
+    public static readonly CameraState CameraState = new();
 
     public MainWindow()
     {
@@ -23,24 +24,20 @@ public sealed partial class MainWindow
     }
 
     [DllImport("User32.dll")]
-    public static extern bool SetCursorPos(int X, int Y);
+    public static extern bool SetCursorPos(int x, int y);
 
     [DllImport("user32.dll")]
-    public static extern bool GetCursorPos(out POINT lpPoint);
+    public static extern bool GetCursorPos(out Point lpPoint);
 
-    public static Point GetCursorPosition()
+    public static System.Windows.Point GetCursorPosition()
     {
-        POINT lpPoint;
-        GetCursorPos(out lpPoint);
+        GetCursorPos(out var lpPoint);
         return lpPoint;
     }
 
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
         ExampleScene.Render();
-        MyTextBlock.Text = $"{(int)Mouse.GetPosition(MyGrid).X};{(int)Mouse.GetPosition(MyGrid).Y}";
-        MyVar.Cur.X = Mouse.GetPosition(MyGrid).X;
-        MyVar.Cur.Y = Mouse.GetPosition(MyGrid).Y;
     }
 
     private void OpenTkControl_OnReady()
@@ -53,122 +50,104 @@ public sealed partial class MainWindow
         switch (e.Key)
         {
             case Key.Up:
-                if (MyVar.Xalfa < 180)
-                    MyVar.Xalfa += MyVar.constSpeedRotation;
+                if (CameraState.HorizontalCameraAngle < 180)
+                    CameraState.HorizontalCameraAngle += Constants.RotationSpeed;
                 break;
             case Key.Down:
-                if (MyVar.Xalfa > 0)
-                    MyVar.Xalfa -= MyVar.constSpeedRotation;
+                if (CameraState.HorizontalCameraAngle > 0)
+                    CameraState.HorizontalCameraAngle -= Constants.RotationSpeed;
                 break;
             case Key.Left:
-                MyVar.Zalfa += MyVar.constSpeedRotation;
+                CameraState.VerticalCameraAngle += Constants.RotationSpeed;
                 break;
             case Key.Right:
-                MyVar.Zalfa -= MyVar.constSpeedRotation;
+                CameraState.VerticalCameraAngle -= Constants.RotationSpeed;
                 break;
             case Key.Space:
-                MyVar.Yalfa -= 0.2f;
+                CameraState.ZAxisCameraPosition -= 0.2f;
                 break;
             case Key.Z:
-                MyVar.Yalfa += 0.2f;
+                CameraState.ZAxisCameraPosition += 0.2f;
                 break;
             case Key.W:
-                MyVar.speed = MyVar.constSpeed;
+                CameraState.CurrentCameraSpeed = Constants.Speed;;
                 break;
             case Key.S:
-                MyVar.speed = -MyVar.constSpeed;
+                CameraState.CurrentCameraSpeed = -Constants.Speed;;
                 break;
             case Key.D:
-                MyVar.speed = MyVar.constSpeed;
-                MyVar.ugol += Math.PI * 0.5;
+                CameraState.CurrentCameraSpeed = Constants.Speed;;
+                CameraState.CurrentCameraAngle += Math.PI * 0.5;
                 break;
             case Key.A:
-                MyVar.speed = MyVar.constSpeed;
-                MyVar.ugol -= Math.PI * 0.5;
+                CameraState.CurrentCameraSpeed = Constants.Speed;;
+                CameraState.CurrentCameraAngle -= Math.PI * 0.5;
                 break;
         }
     }
 
-    private void MainWindow_OnSizeChanged(object sender, SizeChangedEventArgs e)
-    {
-        //ExampleScene.WmSize(MyGrid, MyWindow);
-    }
-
-
     private void MainWindow_OnMouseEnter(object sender, MouseEventArgs e)
     {
-        MyVar.MouseSelect = true;
+        RenderingSettings.IsMouseOnScreen = true;
     }
 
     private void MainWindow_OnMouseLeave(object sender, MouseEventArgs e)
     {
-        MyVar.MouseSelect = false;
+        RenderingSettings.IsMouseOnScreen = false;
     }
 
     private void OnClickColor(object sender, RoutedEventArgs e)
     {
         if (Equals(sender, Orthogonal))
         {
-            MyVar.Orthogonal = true;
+            RenderingSettings.IsOrthogonalProjectionOn = true;
         }
 
         if (Equals(sender, Perspective))
         {
-            MyVar.Perspective = true;
+            RenderingSettings.IsPerspectiveProjectionOn = true;
         }
 
         if (Equals(sender, Object))
         {
-            if (MyVar.Object)
-                MyVar.Object = false;
-            else
-                MyVar.Object = true;
+            RenderingSettings.IsObjectVisible = !RenderingSettings.IsObjectVisible;
         }
 
         if (Equals(sender, Skeleton))
         {
-            if (MyVar.Skeleton)
-                MyVar.Skeleton = false;
-            else
-                MyVar.Skeleton = true;
+            RenderingSettings.IsCarcaseVisible = !RenderingSettings.IsCarcaseVisible;
         }
 
         if (Equals(sender, Textures))
         {
-            if (MyVar.Textures)
-                MyVar.Textures = false;
-            else
-                MyVar.Textures = true;
+            RenderingSettings.IsTexturesVisible = !RenderingSettings.IsTexturesVisible;
         }
 
         if (Equals(sender, Normals))
         {
-            if (MyVar.Normals)
-                MyVar.Normals = false;
-            else
-                MyVar.Normals = true;
+            RenderingSettings.IsNormalsVisible = !RenderingSettings.IsNormalsVisible;
         }
 
         if (Equals(sender, Dis))
         {
-            MyVar.NormalDis = true;
+            RenderingSettings.IsNormalSmoothingDisabled = true;
         }
 
         if (Equals(sender, En))
         {
-            MyVar.NormalEn = true;
+            RenderingSettings.IsNormalSmoothingEnabled = true;
         }
     }
 
     [StructLayout(LayoutKind.Sequential)]
-    public struct POINT
+    public struct Point
     {
         public int X;
         public int Y;
 
-        public static implicit operator Point(POINT point)
+        public static implicit operator System.Windows.Point(Point point)
         {
-            return new Point(point.X, point.Y);
+            return new System.Windows.Point(point.X, point.Y);
         }
     }
 }
