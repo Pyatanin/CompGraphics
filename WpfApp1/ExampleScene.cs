@@ -105,7 +105,6 @@ namespace WpfLabs
 
         public static void CreateNormal()
         {
-            MyVar.floorNormals = new PlaneNormals(MyVar.MyFloor.Coordinat, true);
             MyVar.FootingNormals = new PlaneNormals(MyVar.MyFigura3D.Footing.ToArray(), true);
             MyVar.ReplicationNormals = new PlaneNormals(MyVar.MyFigura3D.Replication.ToArray(), true);
             MyVar.GranNormals = new List<PlaneNormals>();
@@ -118,15 +117,6 @@ namespace WpfLabs
 
         public static void ShowNormas()
         {
-            //Floor
-            foreach (var normal in MyVar.floorNormals.Normals)
-            {
-                GL.PushMatrix();
-                ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
-                    normal.ZAxisAngle);
-                GL.PopMatrix();
-            }
-
             foreach (var normal in MyVar.FootingNormals.Normals)
             {
                 GL.PushMatrix();
