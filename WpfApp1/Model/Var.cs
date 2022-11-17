@@ -35,7 +35,7 @@ public class Var
         },
         new List<float>()
         {
-            1, 1, 2
+            1, 0, 2
         },
         new List<float>()
         {
@@ -43,7 +43,7 @@ public class Var
         },
         new List<float>()
         {
-            1, 1, 1
+            2, 2, 2
         },
         new float[]
         {
@@ -96,12 +96,12 @@ public class Var
 
     public Point pos = new(0, 0);
     public PlaneNormals ReplicationNormals;
-    public bool Skeleton = true;
+    public bool Skeleton = false;
 
     public double speed = 0;
 
     public float SunRotate = 0.0f;
-    public bool Textures = true;
+    public bool Textures = false;
 
     public List<float> traektoria3D = new List<float>() { 0, 0, 2 };
     public double ugol = 0;

@@ -70,12 +70,12 @@ public class Figura3D
             Grans[i].Add(scale[1] * footing2D[2 * i + 3]);
             Grans[i].Add(0);
 
-            Grans[i].Add(scale[0] * footing2D[2 * i + 2] + tirag[0]);
-            Grans[i].Add(scale[1] * footing2D[2 * i + 3] + tirag[1]);
+            Grans[i].Add(scale[0] * (footing2D[2 * i + 2] + tirag[0]));
+            Grans[i].Add(scale[1] * (footing2D[2 * i + 3] + tirag[1]));
             Grans[i].Add(scale[2] * tirag[2]);
 
-            Grans[i].Add(scale[0] * footing2D[2 * i] + tirag[0]);
-            Grans[i].Add(scale[1] * footing2D[2 * i + 1] + tirag[1]);
+            Grans[i].Add(scale[0] * (footing2D[2 * i] + tirag[0]));
+            Grans[i].Add(scale[1] * (footing2D[2 * i + 1] + tirag[1]));
             Grans[i].Add(scale[2] * tirag[2]);
         }
 
@@ -85,13 +85,13 @@ public class Figura3D
         Grans.Last().Add(0);
 
 
-        Grans.Last().Add(scale[0] * footing2D[0] + tirag[0]);
-        Grans.Last().Add(scale[1] * footing2D[1] + tirag[1]);
+        Grans.Last().Add(scale[0] * (footing2D[0] + tirag[0]));
+        Grans.Last().Add(scale[1] * (footing2D[1] + tirag[1]));
         Grans.Last().Add(scale[2] * tirag[2]);
 
 
-        Grans.Last().Add(scale[0] * footing2D[^2] + tirag[0]);
-        Grans.Last().Add(scale[1] * footing2D[^1] + tirag[1]);
+        Grans.Last().Add(scale[0] * (footing2D[^2] + tirag[0]));
+        Grans.Last().Add(scale[1] * (footing2D[^1] + tirag[1]));
         Grans.Last().Add(scale[2] * tirag[2]);
 
         Grans.Last().Add(scale[0] * footing2D[^2]);

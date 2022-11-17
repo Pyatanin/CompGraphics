@@ -355,7 +355,7 @@ namespace WpfLabs
             for (int i = 0; i < MyVar.MyFigura3D.Replication.Count / 3; i++)
             {
                 var dot = MyVar.MyFigura3D.Replication.GetRange(3 * i, 3);
-                GL.Vertex3(dot[0] + MyVar.traektoria3D[0], dot[1] + MyVar.traektoria3D[1], MyVar.traektoria3D[2]);
+                GL.Vertex3(dot[0], dot[1], dot[2]);
             }
 
             GL.End();
