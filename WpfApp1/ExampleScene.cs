@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Linq;
 using System.Windows.Controls;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -40,8 +38,7 @@ namespace WpfLabs
 
             GL.Enable(EnableCap.Normalize);
 
-            CreateGrani();
-            CreateNormalFool();
+            CreateNormal();
         }
 
         public static void WmSize(Grid MyGrid, MainWindow MyWindow)
@@ -65,7 +62,8 @@ namespace WpfLabs
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
+                    MyVar.MyFloor.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -95,65 +93,37 @@ namespace WpfLabs
             }
         }
 
-        public static void CreateGrani()
+
+        public static void CreateNormal()
         {
-            for (int i = 0; i < MyVar.sechenie2D.Count / 2 - 1; i++)
-            {
-                MyVar.Grans.Add(new List<float>());
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 1]);
-                MyVar.Grans[i].Add(0);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 2]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 3]);
-                MyVar.Grans[i].Add(0);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 2] + MyVar.traektoria3D[0]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 3] + MyVar.traektoria3D[1]);
-                MyVar.Grans[i].Add(MyVar.traektoria3D[2]);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i] + MyVar.traektoria3D[0]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 1] + MyVar.traektoria3D[1]);
-                MyVar.Grans[i].Add(MyVar.traektoria3D[2]);
-            }
-
-            MyVar.Grans.Add(new List<float>());
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[1]);
-            MyVar.Grans.Last().Add(0);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^2]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^1]);
-            MyVar.Grans.Last().Add(0);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^2] + MyVar.traektoria3D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^1] + MyVar.traektoria3D[1]);
-            MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[0] + MyVar.traektoria3D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[1] + MyVar.traektoria3D[1]);
-            MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
-        }
-
-        public static void CreateNormalFool()
-        {
-            MyVar.floorNormals = new PlaneNormals(MyVar.floor10);
+            MyVar.floorNormals = new PlaneNormals(MyVar.MyFloor.Coordinat, true);
+            MyVar.upperaseNormals = new PlaneNormals(MyVar.MyFigura3D.Footing.ToArray(), true);
         }
 
 
-        public static void ShowNormas(Vector3 start, Vector3 end)
+        public static void ShowNormas()
         {
+            //Floor
             foreach (var normal in MyVar.floorNormals.Normals)
             {
                 GL.PushMatrix();
-                ShowNormal(normal.StartPoint, normal.EndPoint);
+                ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
+                    normal.ZAxisAngle);
+                GL.PopMatrix();
+            }
+
+            foreach (var normal in MyVar.upperaseNormals.Normals)
+            {
+                GL.PushMatrix();
+                ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
+                    normal.ZAxisAngle);
                 GL.PopMatrix();
             }
         }
 
-        public static void ShowNormal(Vector3 start, Vector3 end)
+        public static void ShowNormal(Vector3 start, Vector3 end, float Xalfa, float Yalfa, float Zalfa)
         {
-            GL.LineWidth(10);
+            GL.LineWidth(5);
             GL.Color3(Color.Black);
             GL.Begin(BeginMode.LineLoop);
 
@@ -164,6 +134,10 @@ namespace WpfLabs
 
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.Translate(end);
+            GL.Rotate(Xalfa, 1, 0, 0);
+            GL.Rotate(Yalfa, 0, 1, 0);
+            GL.Rotate(Zalfa, 0, 0, 1);
+
             GL.Scale(0.05, 0.05, 0.05);
 
             GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.Piramida);
@@ -178,7 +152,8 @@ namespace WpfLabs
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
+                    MyVar.MyFloor.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -192,7 +167,7 @@ namespace WpfLabs
             GL.EnableClientState(ArrayCap.NormalArray);
 
 
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.floor10);
+            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFloor.Coordinat);
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
             if (texture)
@@ -220,7 +195,8 @@ namespace WpfLabs
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, Down.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
+                    MyVar.MyFloor.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -230,9 +206,9 @@ namespace WpfLabs
             }
 
             GL.PushMatrix();
-            GL.VertexPointer(2, VertexPointerType.Float, 0, MyVar.sechenie2D.ToArray());
+            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Footing.ToArray());
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.sechenie2D.Count / 2);
+            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Footing.Count / 3);
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -246,7 +222,8 @@ namespace WpfLabs
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, Up.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
+                    MyVar.MyFloor.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -255,10 +232,10 @@ namespace WpfLabs
                 GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
             }
 
-            GL.VertexPointer(2, VertexPointerType.Float, 0, MyVar.sechenie2D.ToArray());
+            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Replication.ToArray());
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.Translate(MyVar.traektoria3D[0], MyVar.traektoria3D[1], MyVar.traektoria3D[2]);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.sechenie2D.Count / 2);
+            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Replication.Count / 3);
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -268,13 +245,14 @@ namespace WpfLabs
             GL.PopMatrix();
 
             // Грани
-            foreach (var gran in MyVar.Grans)
+            foreach (var gran in MyVar.MyFigura3D.Grans)
             {
                 GL.PushMatrix();
                 if (texture)
                 {
                     GL.BindBuffer(BufferTarget.ArrayBuffer, Side.BufferId);
-                    GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                    GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
+                        MyVar.MyFloor.CoordOverlay,
                         BufferUsageHint.StaticDraw);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                     GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -307,9 +285,9 @@ namespace WpfLabs
             GL.LineWidth(10);
             GL.Begin(BeginMode.LineLoop);
 
-            for (int i = 0; i < MyVar.sechenie2D.Count / 2; i++)
+            for (int i = 0; i < MyVar.MyFigura3D.Footing.Count / 2; i++)
             {
-                var dot = MyVar.sechenie2D.GetRange(2 * i, 2);
+                var dot = MyVar.MyFigura3D.Footing.GetRange(2 * i, 2);
                 GL.Vertex3(dot[0], dot[1], 0);
             }
 
@@ -317,16 +295,16 @@ namespace WpfLabs
 
             GL.Begin(BeginMode.LineLoop);
 
-            for (int i = 0; i < MyVar.sechenie2D.Count / 2; i++)
+            for (int i = 0; i < MyVar.MyFigura3D.Replication.Count / 2; i++)
             {
-                var dot = MyVar.sechenie2D.GetRange(2 * i, 2);
+                var dot = MyVar.MyFigura3D.Replication.GetRange(2 * i, 2);
                 GL.Vertex3(dot[0] + MyVar.traektoria3D[0], dot[1] + MyVar.traektoria3D[1], MyVar.traektoria3D[2]);
             }
 
             GL.End();
 
 
-            foreach (var gran in MyVar.Grans)
+            foreach (var gran in MyVar.MyFigura3D.Grans)
             {
                 GL.Begin(BeginMode.LineLoop);
 
@@ -412,8 +390,9 @@ namespace WpfLabs
             ShowFool(MyVar.Textures);
             GL.PopMatrix();
 
-            GL.Scale(MyVar.mashtab[0], MyVar.mashtab[1], MyVar.mashtab[2]);
-            GL.Rotate(MyVar.rotate[0], MyVar.rotate[1], MyVar.rotate[2], MyVar.rotate[3]);
+            GL.Scale(MyVar.MyFigura3D.Scale[0], MyVar.MyFigura3D.Scale[1], MyVar.MyFigura3D.Scale[2]);
+            GL.Rotate(MyVar.MyFigura3D.Rotate[0], MyVar.MyFigura3D.Rotate[1], MyVar.MyFigura3D.Rotate[2],
+                MyVar.MyFigura3D.Rotate[3]);
             if (MyVar.Skeleton)
             {
                 GL.Color3(Color.Black);
@@ -428,6 +407,7 @@ namespace WpfLabs
 
             if (MyVar.Normals)
             {
+                ShowNormas();
             }
 
             GL.PopMatrix();

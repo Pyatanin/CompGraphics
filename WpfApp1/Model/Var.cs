@@ -6,47 +6,56 @@ namespace WpfApp1.Model;
 public class Var
 {
     public Point Baza = new Point(800, 600);
-
     public double constSpeed = 0.4;
     public double constSpeedRotation = 2;
     public Point Cur = new Point(800, 600);
 
-
-    public float[] floor = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
-
-    public float[] floor10 = { 10, 10, 0, 10, -10, 0, -10, -10, 0, -10, 10, 0 };
-
-
-    public float[] floorCoord =
-    {
-        1, 0,
-        0, 0,
-        0, 1,
-        1, 1,
-    };
-
-    public float[] floorCoord10 =
-    {
-        0, 10,
-        10, 10,
-        10, 0,
-        0, 0
-    };
-
     public PlaneNormals floorNormals;
-
-    public List<List<float>> Grans = new List<List<float>>();
 
 
     public float[] Kvadrat = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
-
-    public double[] mashtab =
-    {
-        1, 1, 1
-    };
+    public PlaneNormals lowerBaseNormals;
 
 
     public bool MouseSelect = false;
+
+    public Figura3D MyFigura3D = new Figura3D(
+        new List<float>()
+        {
+            1, 1,
+            1, -1,
+            -1, -1,
+            -1, 1,
+        },
+        new List<float>()
+        {
+            0, 0, 1
+        },
+        new List<float>()
+        {
+            0, 1, 1, 1
+        },
+        new List<float>()
+        {
+            1, 1, 1
+        });
+
+    public Floor MyFloor = new Floor(
+        new float[]
+        {
+            10, 10, 0,
+            10, -10, 0,
+            -10, -10, 0,
+            -10, 10, 0
+        },
+        new float[]
+        {
+            1, 0,
+            0, 0,
+            0, 1,
+            1, 1,
+        });
+
     public bool Normals = true;
     public float[] normFool = { 10, 10, 10, 10, -10, 10, -10, -10, 10, -10, 10, 10 };
 
@@ -69,19 +78,6 @@ public class Var
     public Point pos = new(0, 0);
 
 
-    public float[] rotate =
-    {
-        0, 1, 1, 1
-    };
-
-    public List<float> sechenie2D = new List<float>()
-    {
-        1, 1,
-        1, -1,
-        -1, -1,
-        -1, 1,
-    };
-
     public bool Skeleton = false;
     public double speed = 0;
     public float SunRotate = 0.0f;
@@ -89,6 +85,7 @@ public class Var
 
     public List<float> traektoria3D = new List<float>() { 0, 0, 2 };
     public double ugol = 0;
+    public PlaneNormals upperaseNormals;
 
     public int vertexBufferId;
     public double Xalfa = 0;
