@@ -70,7 +70,7 @@ namespace WpfLabs
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
                 GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFloor.CoordOverlay,
+                    MyVar.MyFigura3D.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -257,7 +257,7 @@ namespace WpfLabs
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, Down.BufferId);
                 GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFloor.CoordOverlay,
+                    MyVar.MyFigura3D.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -284,7 +284,7 @@ namespace WpfLabs
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, Up.BufferId);
                 GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFloor.CoordOverlay,
+                    MyVar.MyFigura3D.CoordOverlay,
                     BufferUsageHint.StaticDraw);
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
@@ -312,7 +312,7 @@ namespace WpfLabs
                 {
                     GL.BindBuffer(BufferTarget.ArrayBuffer, Side.BufferId);
                     GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                        MyVar.MyFloor.CoordOverlay,
+                        MyVar.MyFigura3D.CoordOverlay,
                         BufferUsageHint.StaticDraw);
                     GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                     GL.EnableClientState(ArrayCap.TextureCoordArray);
