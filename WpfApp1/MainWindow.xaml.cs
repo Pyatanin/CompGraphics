@@ -14,7 +14,6 @@ public sealed partial class MainWindow
 {
     public static Var MyVar = new();
 
-    public static Camera MyCamera = new Camera(0, -10, 1, 40, 0);
 
     public MainWindow()
     {

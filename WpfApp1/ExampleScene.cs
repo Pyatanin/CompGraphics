@@ -41,6 +41,7 @@ namespace WpfLabs
             GL.Enable(EnableCap.Normalize);
 
             CreateGrani();
+            CreateNormalFool();
         }
 
         public static void WmSize(Grid MyGrid, MainWindow MyWindow)
@@ -57,8 +58,22 @@ namespace WpfLabs
             }
         }
 
-        public static void Kvadrat()
+        public static void Kvadrat(bool texture)
         {
+            Texture2D MyTexture = new Texture2D("Texture/4.png");
+
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
+                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.floorCoord.Length * sizeof(float), MyVar.floorCoord,
+                    BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.Enable(EnableCap.Texture2D);
+                MyTexture.Bind();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
+            }
+
             GL.EnableClientState(ArrayCap.VertexArray);
             GL.EnableClientState(ArrayCap.NormalArray);
 
@@ -66,8 +81,18 @@ namespace WpfLabs
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
 
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                MyTexture.UnBind();
+            }
+
             GL.DisableClientState(ArrayCap.VertexArray);
             GL.DisableClientState(ArrayCap.NormalArray);
+            if (texture)
+            {
+                GL.DisableClientState(ArrayCap.TextureCoordArray);
+            }
         }
 
         public static void CreateGrani()
@@ -112,42 +137,18 @@ namespace WpfLabs
 
         public static void CreateNormalFool()
         {
-            for (int i = 0; i < MyVar.sechenie2D.Count / 2 - 1; i++)
+            MyVar.floorNormals = new PlaneNormals(MyVar.floor10);
+        }
+
+
+        public static void ShowNormas(Vector3 start, Vector3 end)
+        {
+            foreach (var normal in MyVar.floorNormals.Normals)
             {
-                MyVar.Grans.Add(new List<float>());
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 1]);
-                MyVar.Grans[i].Add(0);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 2]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 3]);
-                MyVar.Grans[i].Add(0);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 2] + MyVar.traektoria3D[0]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 3] + MyVar.traektoria3D[1]);
-                MyVar.Grans[i].Add(MyVar.traektoria3D[2]);
-
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i] + MyVar.traektoria3D[0]);
-                MyVar.Grans[i].Add(MyVar.sechenie2D[2 * i + 1] + MyVar.traektoria3D[1]);
-                MyVar.Grans[i].Add(MyVar.traektoria3D[2]);
+                GL.PushMatrix();
+                ShowNormal(normal.StartPoint, normal.EndPoint);
+                GL.PopMatrix();
             }
-
-            MyVar.Grans.Add(new List<float>());
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[1]);
-            MyVar.Grans.Last().Add(0);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^2]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^1]);
-            MyVar.Grans.Last().Add(0);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^2] + MyVar.traektoria3D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[^1] + MyVar.traektoria3D[1]);
-            MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
-
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[0] + MyVar.traektoria3D[0]);
-            MyVar.Grans.Last().Add(MyVar.sechenie2D[1] + MyVar.traektoria3D[1]);
-            MyVar.Grans.Last().Add(MyVar.traektoria3D[2]);
         }
 
         public static void ShowNormal(Vector3 start, Vector3 end)
@@ -191,7 +192,7 @@ namespace WpfLabs
             GL.EnableClientState(ArrayCap.NormalArray);
 
 
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.floor);
+            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.floor10);
             GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
             GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
             if (texture)
@@ -395,25 +396,24 @@ namespace WpfLabs
                 MyVar.Orthogonal = false;
             }
 
-//Солнышко
+            //Солнышко
             GL.PushMatrix();
             GL.Rotate(MyVar.SunRotate, 0, 1, 0);
             float[] pos = new float[] { 0, 0, 1, 0 };
             GL.Light(LightName.Light0, LightParameter.Position, pos);
             GL.Translate(0, 0, 20);
             GL.Color3(Color.White);
-            Kvadrat();
+            Kvadrat(MyVar.Textures);
             GL.PopMatrix();
 
             GL.PushMatrix();
-            GL.Scale(10, 10, 10);
-            GL.Translate(0, 0, -1);
+            //GL.Scale(10, 10, 10);
+            GL.Translate(0, 0, -0.001);
             ShowFool(MyVar.Textures);
             GL.PopMatrix();
 
             GL.Scale(MyVar.mashtab[0], MyVar.mashtab[1], MyVar.mashtab[2]);
             GL.Rotate(MyVar.rotate[0], MyVar.rotate[1], MyVar.rotate[2], MyVar.rotate[3]);
-
             if (MyVar.Skeleton)
             {
                 GL.Color3(Color.Black);
@@ -426,19 +426,9 @@ namespace WpfLabs
                 Show3d(MyVar.Textures);
             }
 
-
             if (MyVar.Normals)
             {
-                GL.PushMatrix();
-                ShowNormal(new Vector3(1, 1, 2), new Vector3(1, 1, 3));
-                GL.PopMatrix();
-                GL.PushMatrix();
-                ShowNormal(new Vector3(1, -1, 2), new Vector3(1, -1, 3));
-                GL.PopMatrix();
-                // ShowNormal(new Vector3(-1,1,2),new Vector3(-1,1,3));
-                // ShowNormal(new Vector3(-1,-1,2),new Vector3(-1,-1,3));
             }
-
 
             GL.PopMatrix();
             MyVar.SunRotate++;

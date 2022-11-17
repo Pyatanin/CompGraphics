@@ -11,8 +11,11 @@ public class Var
     public double constSpeedRotation = 2;
     public Point Cur = new Point(800, 600);
 
+
     public float[] floor = { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 };
+
     public float[] floor10 = { 10, 10, 0, 10, -10, 0, -10, -10, 0, -10, 10, 0 };
+
 
     public float[] floorCoord =
     {
@@ -30,6 +33,8 @@ public class Var
         0, 0
     };
 
+    public PlaneNormals floorNormals;
+
     public List<List<float>> Grans = new List<List<float>>();
 
 
@@ -43,8 +48,8 @@ public class Var
 
     public bool MouseSelect = false;
     public bool Normals = true;
-
     public float[] normFool = { 10, 10, 10, 10, -10, 10, -10, -10, 10, -10, 10, 10 };
+
     public bool Object = true;
     public bool Orthogonal = false;
 
