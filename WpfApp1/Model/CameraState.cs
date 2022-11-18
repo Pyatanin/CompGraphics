@@ -7,6 +7,7 @@ public class CameraState
     public double XAxisCameraPosition = 0;
     public double YAxisCameraPosition = 10;
     public double ZAxisCameraPosition = 0;
-    public double HorizontalCameraAngle = -100;
-    public double VerticalCameraAngle = 100;
+    
+    public double HorizontalCameraAngle = 90;
+    public double VerticalCameraAngle = 180;
 }

@@ -182,7 +182,17 @@ public static class ExampleScene
         }
 
         GL.EnableClientState(ArrayCap.VertexArray);
+        GL.EnableClientState(ArrayCap.NormalArray);
+
         GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingFloor.Coordinates);
+        GL.NormalPointer(NormalPointerType.Float, 0, new float[]
+        {
+            10, 10, 10,
+            10, -10, 10,
+            -10, -10, 10,
+            -10, 10, 10
+        });
+
         GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
         if (texture)
         {
@@ -191,6 +201,8 @@ public static class ExampleScene
         }
 
         GL.DisableClientState(ArrayCap.VertexArray);
+        GL.DisableClientState(ArrayCap.NormalArray);
+
         if (texture)
         {
             GL.DisableClientState(ArrayCap.TextureCoordArray);
@@ -201,6 +213,8 @@ public static class ExampleScene
     {
         GL.EnableClientState(ArrayCap.VertexArray);
         GL.EnableClientState(ArrayCap.NormalArray);
+        GL.Color3(Color.White);
+
         // ОСнование
         if (texture)
         {
@@ -301,8 +315,10 @@ public static class ExampleScene
 
     private static void Carcase()
     {
-        GL.LineWidth(10);
+        GL.LineWidth(5);
         GL.Begin(BeginMode.LineLoop);
+        GL.Color3(Color.Black);
+
 
         for (var i = 0; i < _renderingReplicatedFigure3D.BasicPlane.Length; i += 3)
         {
@@ -450,13 +466,11 @@ public static class ExampleScene
             _renderingReplicatedFigure3D.RotationVector[3]);
         if (MainWindow.RenderingSettings.IsCarcaseVisible)
         {
-            GL.Color3(Color.Black);
             Carcase();
         }
 
         if (MainWindow.RenderingSettings.IsObjectVisible)
         {
-            GL.Color3(Color.Orange);
             Show3d(MainWindow.RenderingSettings.IsTexturesVisible);
         }
 

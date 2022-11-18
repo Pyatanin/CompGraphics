@@ -39,9 +39,9 @@ public class PlaneNormals
         var normalsArray = new float[Normals.Length * 3];
         for (var i = 0; i < Normals.Length; i++)
         {
-            normalsArray[i] = Normals[i].EndPoint.X;
-            normalsArray[i + 1] = Normals[i].EndPoint.Y;
-            normalsArray[i + 2] = Normals[i].EndPoint.Z;
+            normalsArray[3*i] = Normals[i].EndPoint.X;
+            normalsArray[3*i + 1] = Normals[i].EndPoint.Y;
+            normalsArray[3*i + 2] = Normals[i].EndPoint.Z;
         }
 
         return normalsArray;
