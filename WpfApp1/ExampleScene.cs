@@ -1,494 +1,471 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Drawing;
-using System.Windows.Controls;
+using System.IO;
+using System.Text.Json;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
 using WpfApp1.Model;
-using static WpfLabs.MainWindow;
 
-namespace WpfLabs
+namespace WpfApp1;
+
+/// Example class handling the rendering for OpenGL.
+public static class ExampleScene
 {
-    /// Example class handling the rendering for OpenGL.
-    public class ExampleScene
+    private static Figure3D _renderingReplicatedFigure3D;
+
+    private static readonly Floor RenderingFloor = new
+    (
+        new float[]
+        {
+            10, 10, -2,
+            10, -10, -2,
+            -10, -10, -2,
+            -10, 10, -2
+        },
+        new float[]
+        {
+            10, 0,
+            0, 0,
+            0, 10,
+            10, 10
+        },
+        "Texture/3.jpg"
+    );
+
+    private static readonly Sun RenderingSun = new
+    (
+        new float[] { 1, 1, 0, 1, -1, 0, -1, -1, 0, -1, 1, 0 },
+        "Texture/4.png",
+        new float[] { 1, 0, 0, 0, 0, 1, 1, 1 }
+    );
+
+    public static void Ready()
     {
-        public static void Ready()
+        var inputData = JsonSerializer.Deserialize<InputData>(File.ReadAllText("File/InputData.json"));
+        _renderingReplicatedFigure3D = new Figure3D
+        (
+            inputData.BasicPlane, 
+            inputData.ReplicationVector,
+            inputData.RotationVector,
+            inputData.ScaleVector, 
+            inputData.TextureOverlayCoords, 
+            "Texture/Down.jpg",
+            "Texture/Up.jpg",
+            "Texture/Side.jpg"
+        );
+        if (MainWindow.RenderingSettings.IsPerspectiveProjectionOn)
         {
-            if (MyVar.Perspective)
-            {
-                GL.MatrixMode(MatrixMode.Projection);
-                GL.LoadIdentity();
-                GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
-                MyVar.Perspective = false;
-            }
-
-            if (MyVar.Orthogonal)
-            {
-                GL.MatrixMode(MatrixMode.Projection);
-                GL.LoadIdentity();
-                GL.Ortho(-10, 10, -10, 10, 10, -10);
-                MyVar.Orthogonal = false;
-            }
-
-            GL.MatrixMode(MatrixMode.Modelview);
+            GL.MatrixMode(MatrixMode.Projection);
             GL.LoadIdentity();
+            GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
+            MainWindow.RenderingSettings.IsPerspectiveProjectionOn = false;
+        }
 
-            GL.Enable(EnableCap.DepthTest);
+        if (MainWindow.RenderingSettings.IsOrthogonalProjectionOn)
+        {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(-10, 10, -10, 10, 10, -10);
+            MainWindow.RenderingSettings.IsOrthogonalProjectionOn = false;
+        }
 
-            GL.Enable(EnableCap.Lighting);
-            GL.Enable(EnableCap.Light0);
-            GL.Enable(EnableCap.ColorMaterial);
+        GL.MatrixMode(MatrixMode.Modelview);
+        GL.LoadIdentity();
 
+        GL.Enable(EnableCap.DepthTest);
+
+        GL.Enable(EnableCap.Lighting);
+        GL.Enable(EnableCap.Light0);
+        GL.Enable(EnableCap.ColorMaterial);
+
+        GL.Enable(EnableCap.Normalize);
+    }
+
+    private static void ShowSun(bool texture)
+    {
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingSun.SunTexture.BufferId);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                RenderingSun.TextureOverlayCoordinates.Length * sizeof(float),
+                RenderingSun.TextureOverlayCoordinates,
+                BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.Enable(EnableCap.Texture2D);
+            RenderingSun.SunTexture.Bind();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        }
+
+        GL.EnableClientState(ArrayCap.VertexArray);
+
+        GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingSun.SunCoordinates);
+        GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
+
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            RenderingSun.SunTexture.Unbind();
+        }
+
+        GL.DisableClientState(ArrayCap.VertexArray);
+        if (texture)
+        {
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
+        }
+    }
+
+
+    private static void ShowNormals()
+    {
+        foreach (var normal in _renderingReplicatedFigure3D.BasicPlaneNormals.Normals)
+        {
+            GL.PushMatrix();
+            ShowNormal(normal.StartPoint, normal.EndPoint);
+            GL.PopMatrix();
+        }
+
+        foreach (var normal in _renderingReplicatedFigure3D.ReplicatedPlaneNormals.Normals)
+        {
+            GL.PushMatrix();
+            ShowNormal(normal.StartPoint, normal.EndPoint);
+            GL.PopMatrix();
+        }
+
+
+        foreach (var edgesNormals in _renderingReplicatedFigure3D.EdgesNormals)
+        {
+            foreach (var normal in edgesNormals.Normals)
+            {
+                GL.PushMatrix();
+                ShowNormal(normal.StartPoint, normal.EndPoint);
+                GL.PopMatrix();
+            }
+        }
+    }
+
+    private static void ShowNormal(Vector3 start, Vector3 end)
+    {
+        GL.LineWidth(5);
+        GL.Color3(Color.Black);
+        GL.Begin(BeginMode.LineLoop);
+
+        GL.Vertex3(start);
+        GL.Vertex3(end);
+
+        GL.End();
+
+        GL.PointSize(10);
+        GL.Color3(Color.Red);
+
+        GL.Begin(BeginMode.Points);
+
+        GL.Vertex3(end);
+
+        GL.End();
+    }
+
+    private static void ShowFloor(bool texture)
+    {
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
+
+            GL.BufferData(BufferTarget.ArrayBuffer, RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
+                RenderingFloor.TextureOverlayCoordinates,
+                BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.Enable(EnableCap.Texture2D);
+            RenderingFloor.FloorTexture.Bind();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        }
+
+        GL.EnableClientState(ArrayCap.VertexArray);
+        GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingFloor.Coordinates);
+        GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            RenderingFloor.FloorTexture.Unbind();
+        }
+
+        GL.DisableClientState(ArrayCap.VertexArray);
+        if (texture)
+        {
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
+        }
+    }
+
+    private static void Show3d(bool texture)
+    {
+        GL.EnableClientState(ArrayCap.VertexArray);
+        GL.EnableClientState(ArrayCap.NormalArray);
+        // ОСнование
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.BasicPlaneTexture.BufferId);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
+                _renderingReplicatedFigure3D.TextureOverlayCoordinates,
+                BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.Enable(EnableCap.Texture2D);
+            _renderingReplicatedFigure3D.BasicPlaneTexture.Bind();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        }
+
+        GL.PushMatrix();
+        GL.VertexPointer(3, VertexPointerType.Float, 0, _renderingReplicatedFigure3D.BasicPlane);
+
+        GL.NormalPointer(NormalPointerType.Float, 0, _renderingReplicatedFigure3D.BasicPlaneNormals.ToArray());
+        GL.DrawArrays(BeginMode.TriangleFan, 0, _renderingReplicatedFigure3D.BasicPlane.Length / 3);
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            _renderingReplicatedFigure3D.BasicPlaneTexture.Unbind();
+        }
+
+        GL.PopMatrix();
+
+        //Тиражирование
+        GL.PushMatrix();
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.ReplicatedPlaneTexture.BufferId);
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
+                _renderingReplicatedFigure3D.TextureOverlayCoordinates,
+                BufferUsageHint.StaticDraw);
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            GL.EnableClientState(ArrayCap.TextureCoordArray);
+            GL.Enable(EnableCap.Texture2D);
+            _renderingReplicatedFigure3D.ReplicatedPlaneTexture.Bind();
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+        }
+
+        GL.VertexPointer(3, VertexPointerType.Float, 0, _renderingReplicatedFigure3D.ReplicatedPlane);
+        GL.NormalPointer(NormalPointerType.Float, 0, _renderingReplicatedFigure3D.ReplicatedPlaneNormals.ToArray());
+        GL.DrawArrays(BeginMode.TriangleFan, 0, _renderingReplicatedFigure3D.ReplicatedPlane.Length / 3);
+        if (texture)
+        {
+            GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            _renderingReplicatedFigure3D.ReplicatedPlaneTexture.Unbind();
+        }
+
+        GL.PopMatrix();
+
+        // Грани
+        var i = 0;
+        foreach (var edge in _renderingReplicatedFigure3D.Edges)
+        {
+            GL.PushMatrix();
+            if (texture)
+            {
+                
+                GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.EdgesTexture.BufferId);
+                GL.BufferData(BufferTarget.ArrayBuffer,
+                    _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
+                    _renderingReplicatedFigure3D.TextureOverlayCoordinates,
+                    BufferUsageHint.StaticDraw);
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                GL.EnableClientState(ArrayCap.TextureCoordArray);
+                GL.Enable(EnableCap.Texture2D);
+                _renderingReplicatedFigure3D.EdgesTexture.Bind();
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+            }
+
+            GL.VertexPointer(3, VertexPointerType.Float, 0, edge);
+
+            GL.NormalPointer(NormalPointerType.Float, 0, _renderingReplicatedFigure3D.EdgesNormals[i].ToArray());
+
+            GL.DrawArrays(BeginMode.TriangleFan, 0, edge.Length / 3);
+            if (texture)
+            {
+                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
+                _renderingReplicatedFigure3D.EdgesTexture.Unbind();
+            }
+
+            GL.PopMatrix();
+            i++;
+        }
+
+        GL.DisableClientState(ArrayCap.VertexArray);
+        GL.DisableClientState(ArrayCap.NormalArray);
+        if (texture)
+        {
+            GL.DisableClientState(ArrayCap.TextureCoordArray);
+        }
+    }
+
+    private static void Carcase()
+    {
+        GL.LineWidth(10);
+        GL.Begin(BeginMode.LineLoop);
+
+        for (var i = 0; i < _renderingReplicatedFigure3D.BasicPlane.Length; i += 3)
+        {
+            GL.Vertex3(_renderingReplicatedFigure3D.BasicPlane[i], _renderingReplicatedFigure3D.BasicPlane[i + 1],
+                _renderingReplicatedFigure3D.BasicPlane[i + 2]);
+        }
+
+        GL.End();
+
+        GL.Begin(BeginMode.LineLoop);
+
+        for (var i = 0; i < _renderingReplicatedFigure3D.ReplicatedPlane.Length; i += 3)
+        {
+            GL.Vertex3(_renderingReplicatedFigure3D.ReplicatedPlane[i],
+                _renderingReplicatedFigure3D.ReplicatedPlane[i + 1], _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]);
+        }
+
+        GL.End();
+
+
+        foreach (var edge in _renderingReplicatedFigure3D.Edges)
+        {
+            GL.Begin(BeginMode.LineLoop);
+
+            for (var i = 0; i < edge.Length; i += 3)
+            {
+                GL.Vertex3(edge[i], edge[i + 1], edge[i + 2]);
+            }
+
+            GL.End();
+        }
+    }
+
+    private static void MoveCamera()
+    {
+        if (MainWindow.CameraState.CurrentCameraSpeed != 0)
+        {
+            MainWindow.CameraState.XAxisCameraPosition += Math.Sin(MainWindow.CameraState.CurrentCameraAngle) *
+                                                          MainWindow.CameraState.CurrentCameraSpeed;
+            MainWindow.CameraState.YAxisCameraPosition += Math.Cos(MainWindow.CameraState.CurrentCameraAngle) *
+                                                          MainWindow.CameraState.CurrentCameraSpeed;
+        }
+
+        MainWindow.CameraState.CurrentCameraAngle = -MainWindow.CameraState.VerticalCameraAngle / 180 * Math.PI;
+
+        if (MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection)
+        {
+            GL.Rotate(-MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+            GL.Rotate(-MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+            GL.Translate(-MainWindow.CameraState.XAxisCameraPosition, -MainWindow.CameraState.YAxisCameraPosition,
+                MainWindow.CameraState.ZAxisCameraPosition);
+        }
+        else
+        {
+            GL.Rotate(MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+            GL.Rotate(MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+            GL.Translate(MainWindow.CameraState.XAxisCameraPosition, MainWindow.CameraState.YAxisCameraPosition,
+                MainWindow.CameraState.ZAxisCameraPosition);
+        }
+
+        MainWindow.CameraState.CurrentCameraSpeed = 0;
+    }
+
+    private static void MoveMouse()
+    {
+        if (!MainWindow.RenderingSettings.IsMouseOnScreen) return;
+        var cur = MainWindow.GetCursorPosition();
+
+        MainWindow.CameraState.VerticalCameraAngle += (Constants.BaseCursorPoint.X - cur.X) / 30;
+        if (MainWindow.CameraState.VerticalCameraAngle < 0) MainWindow.CameraState.VerticalCameraAngle += 360;
+        if (MainWindow.CameraState.VerticalCameraAngle >360) MainWindow.CameraState.VerticalCameraAngle -= 360;
+
+        MainWindow.CameraState.HorizontalCameraAngle += (Constants.BaseCursorPoint.Y - cur.Y) / 30;
+        if (MainWindow.CameraState.HorizontalCameraAngle < 0) MainWindow.CameraState.HorizontalCameraAngle = 0;
+        if (MainWindow.CameraState.HorizontalCameraAngle > 180) MainWindow.CameraState.HorizontalCameraAngle = 180;
+
+        MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
+    }
+
+    public static void Render(float alpha = 1.0f)
+    {
+        GL.ClearColor(Color4.LightBlue);
+        GL.Clear(ClearBufferMask.ColorBufferBit);
+        GL.Clear(ClearBufferMask.DepthBufferBit);
+
+        GL.Enable(EnableCap.PointSmooth);
+
+        GL.PushMatrix();
+        MoveMouse();
+        MoveCamera();
+
+        if (MainWindow.RenderingSettings.IsPerspectiveProjectionOn)
+        {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
+            MainWindow.RenderingSettings.IsPerspectiveProjectionOn = false;
+            GL.MatrixMode(MatrixMode.Modelview);
+
+            MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection = true;
+        }
+
+        if (MainWindow.RenderingSettings.IsOrthogonalProjectionOn)
+        {
+            GL.MatrixMode(MatrixMode.Projection);
+            GL.LoadIdentity();
+            GL.Ortho(-30, 30, -30, 30, 30, -30);
+            MainWindow.RenderingSettings.IsOrthogonalProjectionOn = false;
+            GL.MatrixMode(MatrixMode.Modelview);
+
+            MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection = false;
+        }
+
+        if (MainWindow.RenderingSettings.IsNormalSmoothingDisabled)
+        {
+            GL.Disable(EnableCap.Normalize);
+            MainWindow.RenderingSettings.IsNormalSmoothingDisabled = false;
+        }
+
+        if (MainWindow.RenderingSettings.IsNormalSmoothingEnabled)
+        {
             GL.Enable(EnableCap.Normalize);
-
-            CreateNormal();
-        }
-
-        public static void WmSize(Grid MyGrid, MainWindow MyWindow)
-        {
-            if (MyWindow.ActualWidth > MyWindow.ActualHeight)
-            {
-                MyGrid.Width = MyWindow.ActualHeight;
-                MyGrid.Height = MyWindow.ActualHeight;
-            }
-            else
-            {
-                MyGrid.Width = MyWindow.ActualWidth;
-                MyGrid.Height = MyWindow.ActualWidth;
-            }
-        }
-
-        public static void Kvadrat(bool texture)
-        {
-            Texture2D MyTexture = new Texture2D("Texture/4.png", new float[]
-            {
-                0, 1,
-                1, 1,
-                1, 0,
-                0, 0
-            }, TextureWrapMode.Clamp);
-
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFigura3D.CoordOverlay,
-                    BufferUsageHint.StaticDraw);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                GL.EnableClientState(ArrayCap.TextureCoordArray);
-                GL.Enable(EnableCap.Texture2D);
-                MyTexture.Bind();
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
-            }
-
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.NormalArray);
-
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.Kvadrat);
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
-
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                MyTexture.UnBind();
-            }
-
-            GL.DisableClientState(ArrayCap.VertexArray);
-            GL.DisableClientState(ArrayCap.NormalArray);
-            if (texture)
-            {
-                GL.DisableClientState(ArrayCap.TextureCoordArray);
-            }
+            MainWindow.RenderingSettings.IsNormalSmoothingEnabled = false;
         }
 
 
-        public static void CreateNormal()
+        //Солнышко
+        GL.PushMatrix();
+        GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
+        var pos = new float[] { 0, 0, 1, 0 };
+        GL.Light(LightName.Light0, LightParameter.Position, pos);
+        GL.Translate(0, 0, 20);
+        GL.Color3(Color.White);
+        ShowSun(MainWindow.RenderingSettings.IsTexturesVisible);
+        GL.PopMatrix();
+
+        GL.PushMatrix();
+        ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
+        GL.PopMatrix();
+
+        GL.Scale(_renderingReplicatedFigure3D.ScaleVector[0], _renderingReplicatedFigure3D.ScaleVector[1],
+            _renderingReplicatedFigure3D.ScaleVector[2]);
+        GL.Rotate(_renderingReplicatedFigure3D.RotationVector[0], _renderingReplicatedFigure3D.RotationVector[1],
+            _renderingReplicatedFigure3D.RotationVector[2],
+            _renderingReplicatedFigure3D.RotationVector[3]);
+        if (MainWindow.RenderingSettings.IsCarcaseVisible)
         {
-            MyVar.FootingNormals = new PlaneNormals(MyVar.MyFigura3D.Footing.ToArray(), true);
-            MyVar.ReplicationNormals = new PlaneNormals(MyVar.MyFigura3D.Replication.ToArray(), true);
-            MyVar.GranNormals = new List<PlaneNormals>();
-            foreach (var granNorms in MyVar.MyFigura3D.Grans)
-            {
-                MyVar.GranNormals.Add(new PlaneNormals(granNorms.ToArray(), true));
-            }
-        }
-
-
-        public static void ShowNormas()
-        {
-            foreach (var normal in MyVar.FootingNormals.Normals)
-            {
-                GL.PushMatrix();
-                ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
-                    normal.ZAxisAngle);
-                GL.PopMatrix();
-            }
-
-            foreach (var normal in MyVar.ReplicationNormals.Normals)
-            {
-                GL.PushMatrix();
-                ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
-                    normal.ZAxisAngle);
-                GL.PopMatrix();
-            }
-
-            foreach (var normalGran in MyVar.GranNormals)
-            {
-                foreach (var normal in normalGran.Normals)
-                {
-                    GL.PushMatrix();
-                    ShowNormal(normal.StartPoint, normal.EndPointNormirovan, normal.XAxisAngle, normal.YAxisAngle,
-                        normal.ZAxisAngle);
-                    GL.PopMatrix();
-                }
-            }
-        }
-
-        public static void ShowNormal(Vector3 start, Vector3 end, float Xalfa, float Yalfa, float Zalfa)
-        {
-            GL.LineWidth(5);
             GL.Color3(Color.Black);
-            GL.Begin(BeginMode.LineLoop);
-
-            GL.Vertex3(start);
-            GL.Vertex3(end);
-
-            GL.End();
-
-            GL.PointSize(10);
-            GL.Color3(Color.Red);
-
-            GL.Begin(BeginMode.Points);
-
-            GL.Vertex3(end);
-
-            GL.End();
+            Carcase();
         }
 
-        public static void ShowFool(bool texture)
+        if (MainWindow.RenderingSettings.IsObjectVisible)
         {
-            Texture2D MyTexture = new Texture2D("Texture/3.jpg", new float[]
-            {
-                0, 1,
-                1, 1,
-                1, 0,
-                0, 0
-            }, TextureWrapMode.Repeat);
-
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFloor.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFloor.CoordOverlay,
-                    BufferUsageHint.StaticDraw);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                GL.EnableClientState(ArrayCap.TextureCoordArray);
-                GL.Enable(EnableCap.Texture2D);
-                MyTexture.Bind();
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
-            }
-
-
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.NormalArray);
-
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFloor.Coordinat);
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.normFool);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                MyTexture.UnBind();
-            }
-
-            GL.DisableClientState(ArrayCap.VertexArray);
-            GL.DisableClientState(ArrayCap.NormalArray);
-            if (texture)
-            {
-                GL.DisableClientState(ArrayCap.TextureCoordArray);
-            }
+            GL.Color3(Color.Orange);
+            Show3d(MainWindow.RenderingSettings.IsTexturesVisible);
         }
 
-        public static void Show3d(bool texture)
+        if (MainWindow.RenderingSettings.IsNormalsVisible)
         {
-            GL.EnableClientState(ArrayCap.VertexArray);
-            GL.EnableClientState(ArrayCap.NormalArray);
-            Texture2D Up = new Texture2D("Texture/Up.jpg", new float[]
-            {
-                0, 1,
-                1, 1,
-                1, 0,
-                0, 0
-            }, TextureWrapMode.Clamp);
-            Texture2D Down = new Texture2D("Texture/Down.jpg", new float[]
-            {
-                0, 1,
-                1, 1,
-                1, 0,
-                0, 0
-            }, TextureWrapMode.Clamp);
-            Texture2D Side = new Texture2D("Texture/Side.jpg", new float[]
-            {
-                0, 1,
-                1, 1,
-                1, 0,
-                0, 0
-            }, TextureWrapMode.Clamp);
-            // ОСнование
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, Down.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFigura3D.CoordOverlay,
-                    BufferUsageHint.StaticDraw);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                GL.EnableClientState(ArrayCap.TextureCoordArray);
-                GL.Enable(EnableCap.Texture2D);
-                Down.Bind();
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
-            }
-
-            GL.PushMatrix();
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Footing.ToArray());
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.FootingNormals.arrayNormals);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Footing.Count / 3);
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                Down.UnBind();
-            }
-
-            GL.PopMatrix();
-
-            //Тиражирование
-            GL.PushMatrix();
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, Up.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                    MyVar.MyFigura3D.CoordOverlay,
-                    BufferUsageHint.StaticDraw);
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                GL.EnableClientState(ArrayCap.TextureCoordArray);
-                GL.Enable(EnableCap.Texture2D);
-                Up.Bind();
-                GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
-            }
-
-            GL.VertexPointer(3, VertexPointerType.Float, 0, MyVar.MyFigura3D.Replication.ToArray());
-            GL.NormalPointer(NormalPointerType.Float, 0, MyVar.ReplicationNormals.arrayNormals);
-            GL.DrawArrays(BeginMode.TriangleFan, 0, MyVar.MyFigura3D.Replication.Count / 3);
-            if (texture)
-            {
-                GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                Up.UnBind();
-            }
-
-            GL.PopMatrix();
-
-            // Грани
-            var i = 0;
-            foreach (var gran in MyVar.MyFigura3D.Grans)
-            {
-                GL.PushMatrix();
-                if (texture)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, Side.BufferId);
-                    GL.BufferData(BufferTarget.ArrayBuffer, MyVar.MyFigura3D.CoordOverlay.Length * sizeof(float),
-                        MyVar.MyFigura3D.CoordOverlay,
-                        BufferUsageHint.StaticDraw);
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                    GL.EnableClientState(ArrayCap.TextureCoordArray);
-                    GL.Enable(EnableCap.Texture2D);
-                    Side.Bind();
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, MyVar.vertexBufferId);
-                }
-
-                GL.VertexPointer(3, VertexPointerType.Float, 0, gran.ToArray());
-                GL.NormalPointer(NormalPointerType.Float, 0, MyVar.GranNormals[i].arrayNormals);
-
-                GL.DrawArrays(BeginMode.TriangleFan, 0, gran.Count / 3);
-                if (texture)
-                {
-                    GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
-                    Side.UnBind();
-                }
-
-                GL.PopMatrix();
-                i++;
-            }
-
-            GL.DisableClientState(ArrayCap.VertexArray);
-            GL.DisableClientState(ArrayCap.NormalArray);
-            if (texture)
-            {
-                GL.DisableClientState(ArrayCap.TextureCoordArray);
-            }
+            ShowNormals();
         }
 
-        public static void Karkas()
-        {
-            GL.LineWidth(10);
-            GL.Begin(BeginMode.LineLoop);
-
-            for (int i = 0; i < MyVar.MyFigura3D.Footing.Count / 3; i++)
-            {
-                var dot = MyVar.MyFigura3D.Footing.GetRange(3 * i, 3);
-                GL.Vertex3(dot[0], dot[1], dot[2]);
-            }
-
-            GL.End();
-
-            GL.Begin(BeginMode.LineLoop);
-
-            for (int i = 0; i < MyVar.MyFigura3D.Replication.Count / 3; i++)
-            {
-                var dot = MyVar.MyFigura3D.Replication.GetRange(3 * i, 3);
-                GL.Vertex3(dot[0], dot[1], dot[2]);
-            }
-
-            GL.End();
-
-
-            foreach (var gran in MyVar.MyFigura3D.Grans)
-            {
-                GL.Begin(BeginMode.LineLoop);
-
-                for (int i = 0; i < gran.Count / 3; i++)
-                {
-                    var dot = gran.GetRange(3 * i, 3);
-                    GL.Vertex3(dot[0], dot[1], dot[2]);
-                }
-
-                GL.End();
-            }
-        }
-
-        public static void MoveCamera()
-        {
-            if (MyVar.speed != 0)
-            {
-                MyVar.pos.X += Math.Sin(MyVar.ugol) * MyVar.speed;
-                MyVar.pos.Y += Math.Cos(MyVar.ugol) * MyVar.speed;
-            }
-
-            MyVar.ugol = -MyVar.Zalfa / 180 * Math.PI;
-
-            if (MyVar.Mouse)
-            {
-                GL.Rotate(-MyVar.Xalfa, 1, 0, 0);
-                GL.Rotate(-MyVar.Zalfa, 0, 0, 1);
-                GL.Translate(-MyVar.pos.X, -MyVar.pos.Y, MyVar.Yalfa);
-            }
-            else
-            {
-                GL.Rotate(MyVar.Xalfa, 1, 0, 0);
-                GL.Rotate(MyVar.Zalfa, 0, 0, 1);
-                GL.Translate(MyVar.pos.X, MyVar.pos.Y, MyVar.Yalfa);
-            }
-
-            MyVar.speed = 0;
-        }
-
-        public static void MoveMouse()
-        {
-            if (!MyVar.MouseSelect) return;
-            var cur = GetCursorPosition();
-
-            MyVar.Zalfa += (MyVar.Baza.X - cur.X) / 30;
-            if (MyVar.Zalfa < 0) MyVar.Zalfa += 360;
-            if (MyVar.Zalfa > 360) MyVar.Zalfa -= 360;
-            MyVar.Xalfa += (MyVar.Baza.Y - cur.Y) / 30;
-            if (MyVar.Xalfa < 0) MyVar.Xalfa = 0;
-            if (MyVar.Xalfa > 180) MyVar.Xalfa = 180;
-            SetCursorPos((int)MyVar.Baza.X, (int)MyVar.Baza.Y);
-        }
-
-        public static void Render(float alpha = 1.0f)
-        {
-            GL.ClearColor(Color4.LightBlue);
-            GL.Clear(ClearBufferMask.ColorBufferBit);
-            GL.Clear(ClearBufferMask.DepthBufferBit);
-
-            GL.Enable(EnableCap.PointSmooth);
-
-            GL.PushMatrix();
-            MoveMouse();
-            MoveCamera();
-
-            if (MyVar.Perspective)
-            {
-                GL.MatrixMode(MatrixMode.Projection);
-                GL.LoadIdentity();
-                GL.Frustum(-0.1, 0.1, -0.1, 0.1, 0.2, 1000);
-                MyVar.Perspective = false;
-                GL.MatrixMode(MatrixMode.Modelview);
-
-                MyVar.Mouse = true;
-            }
-
-            if (MyVar.Orthogonal)
-            {
-                GL.MatrixMode(MatrixMode.Projection);
-                GL.LoadIdentity();
-                GL.Ortho(-30, 30, -30, 30, 30, -30);
-                MyVar.Orthogonal = false;
-                GL.MatrixMode(MatrixMode.Modelview);
-
-                MyVar.Mouse = false;
-            }
-
-            if (MyVar.NormalDis)
-            {
-                GL.Disable(EnableCap.Normalize);
-                MyVar.NormalDis = false;
-            }
-
-            if (MyVar.NormalEn)
-            {
-                GL.Enable(EnableCap.Normalize);
-                MyVar.NormalEn = false;
-            }
-
-
-            //Солнышко
-            GL.PushMatrix();
-            GL.Rotate(MyVar.SunRotate, 0, 1, 0);
-            float[] pos = new float[] { 0, 0, 1, 0 };
-            GL.Light(LightName.Light0, LightParameter.Position, pos);
-            GL.Translate(0, 0, 20);
-            GL.Color3(Color.White);
-            Kvadrat(MyVar.Textures);
-            GL.PopMatrix();
-
-            GL.PushMatrix();
-            //GL.Scale(10, 10, 10);
-            ShowFool(MyVar.Textures);
-            GL.PopMatrix();
-
-            GL.Scale(MyVar.MyFigura3D.Scale[0], MyVar.MyFigura3D.Scale[1], MyVar.MyFigura3D.Scale[2]);
-            GL.Rotate(MyVar.MyFigura3D.Rotate[0], MyVar.MyFigura3D.Rotate[1], MyVar.MyFigura3D.Rotate[2],
-                MyVar.MyFigura3D.Rotate[3]);
-            if (MyVar.Skeleton)
-            {
-                GL.Color3(Color.Black);
-                Karkas();
-            }
-
-            if (MyVar.Object)
-            {
-                GL.Color3(Color.Orange);
-                Show3d(MyVar.Textures);
-            }
-
-            if (MyVar.Normals)
-            {
-                ShowNormas();
-            }
-
-            GL.PopMatrix();
-            MyVar.SunRotate++;
-        }
+        GL.PopMatrix();
+        RenderingSun.SunPosition++;
     }
 }
