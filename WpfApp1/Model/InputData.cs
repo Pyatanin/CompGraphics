@@ -2,7 +2,7 @@
 
 public class InputData
 {
-    public float[] Footing { get; init; }
+    public float[] BasicPlane { get; init; }
     public float[] ReplicationVector { get; init; }
     public float[] RotationVector { get; init; }
     public float[] ScaleVector { get; init; }
