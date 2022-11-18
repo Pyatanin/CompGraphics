@@ -26,18 +26,18 @@
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Отрисовка">
-                    <MenuItem x:Name="Object" Header="Объект" Click="OnClickColor" />
-                    <MenuItem x:Name="Skeleton" Header="Каркас" Click="OnClickColor" />
-                    <MenuItem x:Name="Normals" Header="Нормали" Click="OnClickColor" />
-                    <MenuItem x:Name="Textures" Header="Текстуры" Click="OnClickColor" />
+                    <MenuItem x:Name="Object" Header="Объект" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Skeleton" Header="Каркас" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Normals" Header="Нормали" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Textures" Header="Текстуры" Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
                 <MenuItem Header="Проекция">
-                    <MenuItem x:Name="Orthogonal" Header="Ортогональная" Click="OnClickColor" />
-                    <MenuItem x:Name="Perspective" Header="Перспективная " Click="OnClickColor" />
+                    <MenuItem x:Name="Orthogonal" Header="Ортогональная" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Perspective" Header="Перспективная " Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
                 <MenuItem Header="Нормализация">
-                    <MenuItem x:Name="Dis" Header="Отключить нормализацию" Click="OnClickColor" />
-                    <MenuItem x:Name="En" Header="Включить нормализацию" Click="OnClickColor" />
+                    <MenuItem x:Name="Dis" Header="Отключить нормализацию" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="En" Header="Включить нормализацию" Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

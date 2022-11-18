@@ -12,7 +12,6 @@ namespace WpfApp1;
 /// </summary>
 public sealed partial class MainWindow
 {
-    public static Var MyVar = new();
     public static readonly RenderingSettings RenderingSettings = new();
     public static readonly CameraState CameraState = new();
 
@@ -96,7 +95,7 @@ public sealed partial class MainWindow
         RenderingSettings.IsMouseOnScreen = false;
     }
 
-    private void OnClickColor(object sender, RoutedEventArgs e)
+    private void OnClickChangeRenderingSettings(object sender, RoutedEventArgs e)
     {
         if (Equals(sender, Orthogonal))
         {
