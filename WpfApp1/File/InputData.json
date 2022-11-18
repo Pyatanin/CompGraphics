@@ -1,6 +1,6 @@
 ﻿{
    "BasicPlane": [ 1, 1, 1, -1, -1, -1, -1, 1],
-   "ReplicationVector": [0, 0, 2], 
+   "ReplicationVector": [0, 0, -2], 
    "RotationVector": [0, 1, 1, 1], 
    "ScaleVector": [1, 1, 1], 
    "TextureOverlayCoords": [  1, 0, 0, 0, 0, 1, 1, 1]
