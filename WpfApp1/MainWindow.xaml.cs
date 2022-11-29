@@ -69,17 +69,21 @@ public sealed partial class MainWindow
                 CameraState.ZAxisCameraPosition += 0.2f;
                 break;
             case Key.W:
-                CameraState.CurrentCameraSpeed = Constants.Speed;;
+                CameraState.CurrentCameraSpeed = Constants.Speed;
+                ;
                 break;
             case Key.S:
-                CameraState.CurrentCameraSpeed = -Constants.Speed;;
+                CameraState.CurrentCameraSpeed = -Constants.Speed;
+                ;
                 break;
             case Key.D:
-                CameraState.CurrentCameraSpeed = Constants.Speed;;
+                CameraState.CurrentCameraSpeed = Constants.Speed;
+                ;
                 CameraState.CurrentCameraAngle += Math.PI * 0.5;
                 break;
             case Key.A:
-                CameraState.CurrentCameraSpeed = Constants.Speed;;
+                CameraState.CurrentCameraSpeed = Constants.Speed;
+                ;
                 CameraState.CurrentCameraAngle -= Math.PI * 0.5;
                 break;
         }
@@ -97,6 +101,21 @@ public sealed partial class MainWindow
 
     private void OnClickChangeRenderingSettings(object sender, RoutedEventArgs e)
     {
+        if (Equals(sender, Light0))
+        {
+            RenderingSettings.light = 0;
+        }
+
+        if (Equals(sender, Light1))
+        {
+            RenderingSettings.light = 1;
+        }
+
+        if (Equals(sender, Light2))
+        {
+            RenderingSettings.light = 2;
+        }
+
         if (Equals(sender, Orthogonal))
         {
             RenderingSettings.IsOrthogonalProjectionOn = true;

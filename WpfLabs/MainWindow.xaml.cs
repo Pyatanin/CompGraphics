@@ -29,7 +29,6 @@ public sealed partial class MainWindow
     private void OpenTkControl_OnRender(TimeSpan delta)
     {
         ExampleScene.Render();
-        MyTextBlock.Text = $"{MyWindow.Width};{MyWindow.Height}";
         MyGrid.Height = MyWindow.Height;
         MyGrid.Width = MyWindow.Width;
     }

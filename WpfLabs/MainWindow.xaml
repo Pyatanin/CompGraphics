@@ -42,11 +42,10 @@
             <LineBreak />
             <Run Text="Back-Удал.прим.выб.типа" />
         </TextBlock>
-        <TextBlock x:Name="MyTextBlock" HorizontalAlignment="Right" Height="165" Margin="26,25,0,0" TextWrapping="Wrap"
-                   VerticalAlignment="Top" Width="154" />
+        
         <Grid.ContextMenu>
             <ContextMenu>
-                <MenuItem Header="Цвет">
+                <MenuItem Header="Установить цвет">
                     <MenuItem x:Name="Rеd" Header="Красный" Click="OnClickColor" />
                     <MenuItem x:Name="Blue" Header="Синий" Click="OnClickColor" />
                     <MenuItem x:Name="White" Header="Белый" Click="OnClickColor" />
@@ -54,25 +53,31 @@
                     <MenuItem x:Name="Green" Header="Зеленый" Click="OnClickColor" />
                     <MenuItem x:Name="Wheat" Header="Бежевый" Click="OnClickColor" />
                 </MenuItem>
-                <MenuItem Header="Удалить">
-                    <MenuItem x:Name="Ctrl_Z" Header="Последний" Click="OnClickDel" />
-                    <MenuItem x:Name="Del" Header="Выбранные" Click="OnClickDel" />
-                    <MenuItem Header="Выбранного типа">
+                <MenuItem Header="Удаления">
+                    <MenuItem x:Name="Ctrl_Z" Header="Последний примитив" Click="OnClickDel" />
+                    <MenuItem x:Name="Del" Header="Выделенные примитивы" Click="OnClickDel" />
+                    <MenuItem Header="Все примитивы типа">
                         <MenuItem x:Name="DotDel" Header="Точки" Click="OnClickDel" />
                         <MenuItem x:Name="LineDel" Header="Линии" Click="OnClickDel" />
                         <MenuItem x:Name="TriangleDel" Header="Треугольники" Click="OnClickDel" />
                         <MenuItem x:Name="LineStripDel" Header="Ломаные" Click="OnClickDel" />
                     </MenuItem>
                 </MenuItem>
-                <MenuItem Header="Режим">
+                <MenuItem Header="Добавить">
                     <MenuItem x:Name="Dot" Header="Точка" Click="OnClickType" />
                     <MenuItem x:Name="Line" Header="Линия" Click="OnClickType" />
                     <MenuItem x:Name="Triangle" Header="Треугольник" Click="OnClickType" />
-                    <MenuItem x:Name="LineStrip" Header="Ломаная" Click="OnClickType" />
-                    <MenuItem x:Name="Select" Header="Выделение" Click="OnClickType" />
+                    <MenuItem Header="Ломання">
+                        <MenuItem x:Name="LineStrip" Header="Рисовать ломанную" Click="OnClickType" />   
+                        <MenuItem x:Name="Space" Header="Начать новую ломаную" Click="OnClickType" />
+                    </MenuItem>
+
+                </MenuItem>
+                
+                <MenuItem Header="Режим">
+                   <MenuItem x:Name="Select" Header="Выделение" Click="OnClickType" />
                     <MenuItem x:Name="ObjectMovement" Header="Перемещение выделенных" Click="OnClickType" />
                     <MenuItem x:Name="PointMovement" Header="Перемещение точки" Click="OnClickType" />
-                    <MenuItem x:Name="Space" Header="Начать новую ломаную" Click="OnClickType" />
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

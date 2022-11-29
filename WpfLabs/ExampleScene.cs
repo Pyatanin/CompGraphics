@@ -19,7 +19,7 @@ namespace WpfLabs
 
         public static void Render(float alpha = 1.0f)
         {
-            GL.ClearColor(Color4.LightBlue);
+            GL.ClearColor(Color4.White);
             GL.Clear(ClearBufferMask.ColorBufferBit);
             GL.Enable(EnableCap.PointSmooth);
 

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Text.Json;
@@ -29,7 +30,7 @@ public static class ExampleScene
             0, 10,
             10, 10
         },
-        "Texture/3.jpg"
+        "Texture/Up.jpg"
     );
 
     private static readonly Sun RenderingSun = new
@@ -44,11 +45,11 @@ public static class ExampleScene
         var inputData = JsonSerializer.Deserialize<InputData>(File.ReadAllText("File/InputData.json"));
         _renderingReplicatedFigure3D = new Figure3D
         (
-            inputData.BasicPlane, 
+            inputData.BasicPlane,
             inputData.ReplicationVector,
             inputData.RotationVector,
-            inputData.ScaleVector, 
-            inputData.TextureOverlayCoords, 
+            inputData.ScaleVector,
+            inputData.TextureOverlayCoords,
             "Texture/Down.jpg",
             "Texture/Up.jpg",
             "Texture/Side.jpg"
@@ -75,7 +76,6 @@ public static class ExampleScene
         GL.Enable(EnableCap.DepthTest);
 
         GL.Enable(EnableCap.Lighting);
-        GL.Enable(EnableCap.Light0);
         GL.Enable(EnableCap.ColorMaterial);
 
         GL.Enable(EnableCap.Normalize);
@@ -277,7 +277,6 @@ public static class ExampleScene
             GL.PushMatrix();
             if (texture)
             {
-                
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.EdgesTexture.BufferId);
                 GL.BufferData(BufferTarget.ArrayBuffer,
                     _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
@@ -315,7 +314,7 @@ public static class ExampleScene
 
     private static void Carcase()
     {
-        GL.LineWidth(5);
+        GL.LineWidth(10);
         GL.Begin(BeginMode.LineLoop);
         GL.Color3(Color.Black);
 
@@ -333,7 +332,8 @@ public static class ExampleScene
         for (var i = 0; i < _renderingReplicatedFigure3D.ReplicatedPlane.Length; i += 3)
         {
             GL.Vertex3(_renderingReplicatedFigure3D.ReplicatedPlane[i],
-                _renderingReplicatedFigure3D.ReplicatedPlane[i + 1], _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]);
+                _renderingReplicatedFigure3D.ReplicatedPlane[i + 1],
+                _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]);
         }
 
         GL.End();
@@ -389,7 +389,7 @@ public static class ExampleScene
 
         MainWindow.CameraState.VerticalCameraAngle += (Constants.BaseCursorPoint.X - cur.X) / 30;
         if (MainWindow.CameraState.VerticalCameraAngle < 0) MainWindow.CameraState.VerticalCameraAngle += 360;
-        if (MainWindow.CameraState.VerticalCameraAngle >360) MainWindow.CameraState.VerticalCameraAngle -= 360;
+        if (MainWindow.CameraState.VerticalCameraAngle > 360) MainWindow.CameraState.VerticalCameraAngle -= 360;
 
         MainWindow.CameraState.HorizontalCameraAngle += (Constants.BaseCursorPoint.Y - cur.Y) / 30;
         if (MainWindow.CameraState.HorizontalCameraAngle < 0) MainWindow.CameraState.HorizontalCameraAngle = 0;
@@ -398,8 +398,38 @@ public static class ExampleScene
         MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
     }
 
+    private static void EnableLight0()
+    {
+        GL.Enable(EnableCap.Light0);
+        var pos = new float[] { 0, 0, 1, 0 };
+        GL.Light(LightName.Light0, LightParameter.Position, pos);
+    }
+
+    private static void EnableLight1()
+    {
+        GL.Enable(EnableCap.Light1);
+        var pos = new float[] { 0, 0, 1, 0 };
+        var diffuse = new float[] { 1,1,1 };
+        GL.Light(LightName.Light1, LightParameter.Position, pos);
+        GL.Light(LightName.Light1, LightParameter.Diffuse, diffuse);
+    }
+
+    private static void EnableLight2()
+    {
+        GL.Enable(EnableCap.Light2);
+        var pos = new float[] { 0, 0, 1, 1 };
+        var diffuse = new float[] { 0.4f, 0.7f, 0.2f };
+        GL.Light(LightName.Light2, LightParameter.Position, pos);
+        GL.Light(LightName.Light2, LightParameter.Diffuse, diffuse);
+        GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, 1);
+        GL.Light(LightName.Light2, LightParameter.LinearAttenuation, 1);
+        GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, 0.05f);
+    }
+
+
     public static void Render(float alpha = 1.0f)
     {
+        #region MyRegion
         GL.ClearColor(Color4.LightBlue);
         GL.Clear(ClearBufferMask.ColorBufferBit);
         GL.Clear(ClearBufferMask.DepthBufferBit);
@@ -443,35 +473,55 @@ public static class ExampleScene
             GL.Enable(EnableCap.Normalize);
             MainWindow.RenderingSettings.IsNormalSmoothingEnabled = false;
         }
-
+        #endregion
 
         //Солнышко
         GL.PushMatrix();
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
-        var pos = new float[] { 0, 0, 1, 0 };
-        GL.Light(LightName.Light0, LightParameter.Position, pos);
         GL.Translate(0, 0, 20);
+
+        switch (MainWindow.RenderingSettings.light)
+        {
+            case 0:
+                EnableLight0();
+                break;
+            case 1:
+                EnableLight1();
+                break;
+            case 2:
+                EnableLight2();
+                break;
+        }
+
+
         GL.Color3(Color.White);
         ShowSun(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();
 
-        GL.PushMatrix();
-        ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
-        GL.PopMatrix();
+        // GL.PushMatrix();
+        // ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
+        // GL.PopMatrix();
 
         GL.Scale(_renderingReplicatedFigure3D.ScaleVector[0], _renderingReplicatedFigure3D.ScaleVector[1],
             _renderingReplicatedFigure3D.ScaleVector[2]);
         GL.Rotate(_renderingReplicatedFigure3D.RotationVector[0], _renderingReplicatedFigure3D.RotationVector[1],
             _renderingReplicatedFigure3D.RotationVector[2],
             _renderingReplicatedFigure3D.RotationVector[3]);
-        if (MainWindow.RenderingSettings.IsCarcaseVisible)
-        {
-            Carcase();
-        }
+
+        // GL.Rotate(3 * RenderingSun.SunPosition, 0, 0, 1);
+        // GL.Rotate(4 * RenderingSun.SunPosition, 1, 1, 0);
+        // GL.Rotate(2 * RenderingSun.SunPosition, 1, 0, 0);
+
+        GL.Translate(0, 0, -1);
 
         if (MainWindow.RenderingSettings.IsObjectVisible)
         {
             Show3d(MainWindow.RenderingSettings.IsTexturesVisible);
+        }
+
+        if (MainWindow.RenderingSettings.IsCarcaseVisible)
+        {
+            Carcase();
         }
 
         if (MainWindow.RenderingSettings.IsNormalsVisible)
@@ -480,6 +530,15 @@ public static class ExampleScene
         }
 
         GL.PopMatrix();
-        RenderingSun.SunPosition++;
+
+        GL.Disable(EnableCap.Light0);
+        GL.Disable(EnableCap.Light1);
+        GL.Disable(EnableCap.Light2);
+        GL.Disable(EnableCap.Light4);
+        GL.Disable(EnableCap.Light5);
+        GL.Disable(EnableCap.Light6);
+        GL.Disable(EnableCap.Light7);
+
+        RenderingSun.SunPosition++;//
     }
 }
