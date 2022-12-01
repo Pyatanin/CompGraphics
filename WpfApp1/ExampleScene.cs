@@ -359,48 +359,51 @@ public static class ExampleScene
 
     private static void MoveCamera()
     {
-        if (MainWindow.CameraState.CurrentCameraSpeed != 0)
-        {
-            MainWindow.CameraState.XAxisCameraPosition += Math.Sin(MainWindow.CameraState.CurrentCameraAngle) *
-                                                          MainWindow.CameraState.CurrentCameraSpeed;
-            MainWindow.CameraState.YAxisCameraPosition += Math.Cos(MainWindow.CameraState.CurrentCameraAngle) *
-                                                          MainWindow.CameraState.CurrentCameraSpeed;
-        }
+            if (MainWindow.CameraState.CurrentCameraSpeed != 0)
+            {
+                MainWindow.CameraState.XAxisCameraPosition += Math.Sin(MainWindow.CameraState.CurrentCameraAngle) *
+                                                              MainWindow.CameraState.CurrentCameraSpeed;
+                MainWindow.CameraState.YAxisCameraPosition += Math.Cos(MainWindow.CameraState.CurrentCameraAngle) *
+                                                              MainWindow.CameraState.CurrentCameraSpeed;
+            }
 
-        MainWindow.CameraState.CurrentCameraAngle = -MainWindow.CameraState.VerticalCameraAngle / 180 * Math.PI;
+            MainWindow.CameraState.CurrentCameraAngle = -MainWindow.CameraState.VerticalCameraAngle / 180 * Math.PI;
 
-        if (MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection)
-        {
-            GL.Rotate(-MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
-            GL.Rotate(-MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
-            GL.Translate(-MainWindow.CameraState.XAxisCameraPosition, -MainWindow.CameraState.YAxisCameraPosition,
-                MainWindow.CameraState.ZAxisCameraPosition);
-        }
-        else
-        {
-            GL.Rotate(MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
-            GL.Rotate(MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
-            GL.Translate(MainWindow.CameraState.XAxisCameraPosition, MainWindow.CameraState.YAxisCameraPosition,
-                MainWindow.CameraState.ZAxisCameraPosition);
-        }
+            if (MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection)
+            {
+                GL.Rotate(-MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+                GL.Rotate(-MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+                GL.Translate(-MainWindow.CameraState.XAxisCameraPosition, -MainWindow.CameraState.YAxisCameraPosition,
+                    MainWindow.CameraState.ZAxisCameraPosition);
+            }
+            else
+            {
+                GL.Rotate(MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+                GL.Rotate(MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+                GL.Translate(MainWindow.CameraState.XAxisCameraPosition, MainWindow.CameraState.YAxisCameraPosition,
+                    MainWindow.CameraState.ZAxisCameraPosition);
+            }
 
-        MainWindow.CameraState.CurrentCameraSpeed = 0;
+            MainWindow.CameraState.CurrentCameraSpeed = 0;
     }
 
     private static void MoveMouse()
     {
-        if (!MainWindow.RenderingSettings.IsMouseOnScreen) return;
-        var cur = MainWindow.GetCursorPosition();
+        if (MainWindow.RenderingSettings.IsRenderingUnderControl)
+        {
+            if (!MainWindow.RenderingSettings.IsMouseOnScreen) return;
+            var cur = MainWindow.GetCursorPosition();
 
-        MainWindow.CameraState.VerticalCameraAngle += (Constants.BaseCursorPoint.X - cur.X) / 30;
-        if (MainWindow.CameraState.VerticalCameraAngle < 0) MainWindow.CameraState.VerticalCameraAngle += 360;
-        if (MainWindow.CameraState.VerticalCameraAngle > 360) MainWindow.CameraState.VerticalCameraAngle -= 360;
+            MainWindow.CameraState.VerticalCameraAngle += (Constants.BaseCursorPoint.X - cur.X) / 30;
+            if (MainWindow.CameraState.VerticalCameraAngle < 0) MainWindow.CameraState.VerticalCameraAngle += 360;
+            if (MainWindow.CameraState.VerticalCameraAngle > 360) MainWindow.CameraState.VerticalCameraAngle -= 360;
 
-        MainWindow.CameraState.HorizontalCameraAngle += (Constants.BaseCursorPoint.Y - cur.Y) / 30;
-        if (MainWindow.CameraState.HorizontalCameraAngle < 0) MainWindow.CameraState.HorizontalCameraAngle = 0;
-        if (MainWindow.CameraState.HorizontalCameraAngle > 180) MainWindow.CameraState.HorizontalCameraAngle = 180;
+            MainWindow.CameraState.HorizontalCameraAngle += (Constants.BaseCursorPoint.Y - cur.Y) / 30;
+            if (MainWindow.CameraState.HorizontalCameraAngle < 0) MainWindow.CameraState.HorizontalCameraAngle = 0;
+            if (MainWindow.CameraState.HorizontalCameraAngle > 180) MainWindow.CameraState.HorizontalCameraAngle = 180;
 
-        MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
+            MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
+        }
     }
 
     private static void EnableLight0()
@@ -413,12 +416,11 @@ public static class ExampleScene
     private static void EnableLight1()
     {
         GL.Enable(EnableCap.Light1);
-        var pos = new float[] { 0, 0, 7, 1 };
+        var pos = new float[] { 0, 0, 10, 1 };
         var diffuse = new float[] { 0, 0, 1 };
         GL.Light(LightName.Light1, LightParameter.Position, pos);
         GL.Light(LightName.Light1, LightParameter.Diffuse, diffuse);
     }
-
 
     private static void EnableLight2()
     {
@@ -436,13 +438,13 @@ public static class ExampleScene
     {
         GL.Enable(EnableCap.Light3);
 
-        var pos = new float[] { 0, 0, 0, 1 };
+        var pos = new float[] { 0, 0, 10, 1 };
         var diffuse = new float[] { 1, 0, 0 };
         var stop = new float[] { 0, 0, -1 };
 
         GL.Light(LightName.Light3, LightParameter.Position, pos);
         GL.Light(LightName.Light3, LightParameter.Diffuse, diffuse);
-        GL.Light(LightName.Light3, LightParameter.SpotCutoff, 30);
+        GL.Light(LightName.Light3, LightParameter.SpotCutoff, 10);
         GL.Light(LightName.Light3, LightParameter.SpotDirection, stop);
     }
 
@@ -460,7 +462,7 @@ public static class ExampleScene
         GL.Light(LightName.Light4, LightParameter.SpotDirection, stop);
         GL.Light(LightName.Light4, LightParameter.SpotExponent, 15.0f);
     }
-    
+
     private static void EnableLight5()
     {
         GL.Enable(EnableCap.Light5);
@@ -471,7 +473,7 @@ public static class ExampleScene
         GL.Light(LightName.Light5, LightParameter.ConstantAttenuation, 0.01f);
         GL.Light(LightName.Light5, LightParameter.LinearAttenuation, 0.05f);
         GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, 0);
-        
+
         GL.Enable(EnableCap.Light6);
         var pos6 = new float[] { 3, 3, 10, 1 };
         var diffuse6 = new float[] { 1, 0, 0 };
@@ -480,7 +482,7 @@ public static class ExampleScene
         GL.Light(LightName.Light6, LightParameter.ConstantAttenuation, 0.01f);
         GL.Light(LightName.Light6, LightParameter.LinearAttenuation, 0.05f);
         GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, 0);
-        
+
         GL.Enable(EnableCap.Light7);
         var pos7 = new float[] { -3, -3, 10, 1 };
         var diffuse7 = new float[] { 0, 0, 1 };

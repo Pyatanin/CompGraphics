@@ -46,6 +46,7 @@ public sealed partial class MainWindow
 
     private void OnKeyDown(object sender, KeyEventArgs e)
     {
+        if(RenderingSettings.IsRenderingUnderControl)
         switch (e.Key)
         {
             case Key.Up:
@@ -116,6 +117,20 @@ public sealed partial class MainWindow
                 }
                 break;
         }
+
+        if (e.Key == Key.Escape)
+        {
+            RenderingSettings.IsRenderingUnderControl = !RenderingSettings.IsRenderingUnderControl;
+            if (MyWindow.Cursor== Cursors.Arrow)
+            {
+                MyWindow.Cursor = Cursors.None;
+                SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
+            }
+            else
+            {
+                MyWindow.Cursor = Cursors.Arrow;
+            }
+        }
     }
 
     private void MainWindow_OnMouseEnter(object sender, MouseEventArgs e)
@@ -147,6 +162,14 @@ public sealed partial class MainWindow
         if (Equals(sender, Light3))
         {
             RenderingSettings.lightMode = 3;
+        }
+        if (Equals(sender, Light4))
+        {
+            RenderingSettings.lightMode = 4;
+        }
+        if (Equals(sender, Light5))
+        {
+            RenderingSettings.lightMode = 5;
         }
 
         if (Equals(sender, Orthogonal))
@@ -200,5 +223,10 @@ public sealed partial class MainWindow
         {
             return new System.Windows.Point(point.X, point.Y);
         }
+    }
+
+    private void LightList_OnMouseDown(object sender, MouseButtonEventArgs e)
+    {
+        throw new NotImplementedException();
     }
 }

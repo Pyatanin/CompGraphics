@@ -13,16 +13,48 @@
         MaxWidth="{Binding Source={x:Static SystemParameters.MaximizedPrimaryScreenWidth}}"
         WindowStartupLocation="CenterScreen"
         WindowState="Maximized"
-        Background="Navy"
+        Background="White"
         Cursor="None"
         MouseEnter="MainWindow_OnMouseEnter"
         MouseLeave="MainWindow_OnMouseLeave">
-    <Grid x:Name="MyGrid" KeyDown="OnKeyDown">
-        <glWpfControl:GLWpfControl
-            x:Name="OpenTkControl"
+    <Grid x:Name="MyGrid"   KeyDown="OnKeyDown">
+        
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+            <RowDefinition></RowDefinition>
+
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+        
+        <ListBox Name="LightList" ItemsSource="{Binding }" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="5" MouseDown="LightList_OnMouseDown">
+            
+            <ComboBox VerticalAlignment="Top" Text="Light 1">
+                <ComboBoxItem IsSelected="True"  >
+                    <StackPanel Orientation="Horizontal" >
+                    <TextBlock>1111111111111111111111111</TextBlock>
+                        <TextBox>@</TextBox>
+
+                    </StackPanel>
+                </ComboBoxItem>
+            </ComboBox>
+        </ListBox>
+
+        
+        <glWpfControl:GLWpfControl Grid.Column="1" Grid.Row = "0" Grid.ColumnSpan="4" Grid.RowSpan="5"
+            x:Name="OpenTkControl" 
             Ready="OpenTkControl_OnReady"
             Render="OpenTkControl_OnRender" />
-        <TextBlock x:Name="MyTextBlock" />
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Объекты отрисовки">
@@ -44,8 +76,8 @@
                     <MenuItem x:Name="Light1" Header="1" Click="OnClickChangeRenderingSettings" />
                     <MenuItem x:Name="Light2" Header="2" Click="OnClickChangeRenderingSettings" />
                     <MenuItem x:Name="Light3" Header="3" Click="OnClickChangeRenderingSettings" />
-
-
+                    <MenuItem x:Name="Light4" Header="4" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Light5" Header="5" Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

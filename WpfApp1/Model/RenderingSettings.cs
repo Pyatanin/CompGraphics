@@ -14,5 +14,7 @@ public class RenderingSettings
     public bool IsMouseMoveForPerspectiveProjection = true;
     public int lightMode = 3;
     public static float RotetSun = 1;
+    
+    public  bool IsRenderingUnderControl = true;
 
 }
