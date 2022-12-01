@@ -43,6 +43,8 @@
                     <MenuItem x:Name="Light0" Header="0" Click="OnClickChangeRenderingSettings" />
                     <MenuItem x:Name="Light1" Header="1" Click="OnClickChangeRenderingSettings" />
                     <MenuItem x:Name="Light2" Header="2" Click="OnClickChangeRenderingSettings" />
+                    <MenuItem x:Name="Light3" Header="3" Click="OnClickChangeRenderingSettings" />
+
 
                 </MenuItem>
             </ContextMenu>

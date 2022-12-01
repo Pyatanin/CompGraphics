@@ -18,17 +18,17 @@ public static class ExampleScene
     (
         new float[]
         {
-            10, 10, -2,
-            10, -10, -2,
-            -10, -10, -2,
-            -10, 10, -2
+            1, 1, -1,
+            1, -1, -1,
+            -1, -1, -1,
+            -1, 1, -1
         },
         new float[]
         {
-            10, 0,
+            1, 0,
             0, 0,
-            0, 10,
-            10, 10
+            0, 1,
+            1, 1
         },
         "Texture/Up.jpg"
     );
@@ -142,6 +142,13 @@ public static class ExampleScene
                 GL.PopMatrix();
             }
         }
+
+        foreach (var normal in RenderingFloor.FloorNormals.Normals)
+        {
+            GL.PushMatrix();
+            ShowNormal(normal.StartPoint, normal.EndPoint);
+            GL.PopMatrix();
+        }
     }
 
     private static void ShowNormal(Vector3 start, Vector3 end)
@@ -167,6 +174,7 @@ public static class ExampleScene
 
     private static void ShowFloor(bool texture)
     {
+        // GL.Color3(Color.White);
         if (texture)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
@@ -183,15 +191,10 @@ public static class ExampleScene
 
         GL.EnableClientState(ArrayCap.VertexArray);
         GL.EnableClientState(ArrayCap.NormalArray);
+        GL.PushMatrix();
 
         GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingFloor.Coordinates);
-        GL.NormalPointer(NormalPointerType.Float, 0, new float[]
-        {
-            10, 10, 10,
-            10, -10, 10,
-            -10, -10, 10,
-            -10, 10, 10
-        });
+        GL.NormalPointer(NormalPointerType.Float, 0, RenderingFloor.FloorNormals.ToArray());
 
         GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
         if (texture)
@@ -199,6 +202,8 @@ public static class ExampleScene
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             RenderingFloor.FloorTexture.Unbind();
         }
+
+        GL.PopMatrix();
 
         GL.DisableClientState(ArrayCap.VertexArray);
         GL.DisableClientState(ArrayCap.NormalArray);
@@ -401,35 +406,95 @@ public static class ExampleScene
     private static void EnableLight0()
     {
         GL.Enable(EnableCap.Light0);
-        var pos = new float[] { 0, 0, 1, 0 };
+        var pos = new float[] { 0, 0, 10, 0 };
         GL.Light(LightName.Light0, LightParameter.Position, pos);
     }
 
     private static void EnableLight1()
     {
         GL.Enable(EnableCap.Light1);
-        var pos = new float[] { 0, 0, 1, 0 };
-        var diffuse = new float[] { 1,1,1 };
+        var pos = new float[] { 0, 0, 7, 1 };
+        var diffuse = new float[] { 0, 0, 1 };
         GL.Light(LightName.Light1, LightParameter.Position, pos);
         GL.Light(LightName.Light1, LightParameter.Diffuse, diffuse);
     }
 
+
     private static void EnableLight2()
     {
         GL.Enable(EnableCap.Light2);
-        var pos = new float[] { 0, 0, 1, 1 };
-        var diffuse = new float[] { 0.4f, 0.7f, 0.2f };
+        var pos = new float[] { 0, 0, 10, 1 };
+        var diffuse = new float[] { 0, 1, 0 };
         GL.Light(LightName.Light2, LightParameter.Position, pos);
         GL.Light(LightName.Light2, LightParameter.Diffuse, diffuse);
-        GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, 1);
-        GL.Light(LightName.Light2, LightParameter.LinearAttenuation, 1);
-        GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, 0.05f);
+        GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, 0.01f);
+        GL.Light(LightName.Light2, LightParameter.LinearAttenuation, 0.05f);
+        GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, 0);
     }
 
+    private static void EnableLight3()
+    {
+        GL.Enable(EnableCap.Light3);
+
+        var pos = new float[] { 0, 0, 0, 1 };
+        var diffuse = new float[] { 1, 0, 0 };
+        var stop = new float[] { 0, 0, -1 };
+
+        GL.Light(LightName.Light3, LightParameter.Position, pos);
+        GL.Light(LightName.Light3, LightParameter.Diffuse, diffuse);
+        GL.Light(LightName.Light3, LightParameter.SpotCutoff, 30);
+        GL.Light(LightName.Light3, LightParameter.SpotDirection, stop);
+    }
+
+    private static void EnableLight4()
+    {
+        GL.Enable(EnableCap.Light4);
+
+        var pos = new float[] { 0, 0, 10, 1 };
+        var diffuse = new float[] { 1, 0, 0 };
+        var stop = new float[] { 0, 0, -1 };
+
+        GL.Light(LightName.Light4, LightParameter.Position, pos);
+        GL.Light(LightName.Light4, LightParameter.Diffuse, diffuse);
+        GL.Light(LightName.Light4, LightParameter.SpotCutoff, 10);
+        GL.Light(LightName.Light4, LightParameter.SpotDirection, stop);
+        GL.Light(LightName.Light4, LightParameter.SpotExponent, 15.0f);
+    }
+    
+    private static void EnableLight5()
+    {
+        GL.Enable(EnableCap.Light5);
+        var pos5 = new float[] { 0, 0, 10, 1 };
+        var diffuse5 = new float[] { 0, 1, 0 };
+        GL.Light(LightName.Light5, LightParameter.Position, pos5);
+        GL.Light(LightName.Light5, LightParameter.Diffuse, diffuse5);
+        GL.Light(LightName.Light5, LightParameter.ConstantAttenuation, 0.01f);
+        GL.Light(LightName.Light5, LightParameter.LinearAttenuation, 0.05f);
+        GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, 0);
+        
+        GL.Enable(EnableCap.Light6);
+        var pos6 = new float[] { 3, 3, 10, 1 };
+        var diffuse6 = new float[] { 1, 0, 0 };
+        GL.Light(LightName.Light6, LightParameter.Position, pos6);
+        GL.Light(LightName.Light6, LightParameter.Diffuse, diffuse6);
+        GL.Light(LightName.Light6, LightParameter.ConstantAttenuation, 0.01f);
+        GL.Light(LightName.Light6, LightParameter.LinearAttenuation, 0.05f);
+        GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, 0);
+        
+        GL.Enable(EnableCap.Light7);
+        var pos7 = new float[] { -3, -3, 10, 1 };
+        var diffuse7 = new float[] { 0, 0, 1 };
+        GL.Light(LightName.Light7, LightParameter.Position, pos7);
+        GL.Light(LightName.Light7, LightParameter.Diffuse, diffuse7);
+        GL.Light(LightName.Light7, LightParameter.ConstantAttenuation, 0.01f);
+        GL.Light(LightName.Light7, LightParameter.LinearAttenuation, 0.05f);
+        GL.Light(LightName.Light7, LightParameter.QuadraticAttenuation, 0);
+    }
 
     public static void Render(float alpha = 1.0f)
     {
         #region MyRegion
+
         GL.ClearColor(Color4.LightBlue);
         GL.Clear(ClearBufferMask.ColorBufferBit);
         GL.Clear(ClearBufferMask.DepthBufferBit);
@@ -473,14 +538,14 @@ public static class ExampleScene
             GL.Enable(EnableCap.Normalize);
             MainWindow.RenderingSettings.IsNormalSmoothingEnabled = false;
         }
+
         #endregion
 
         //Солнышко
         GL.PushMatrix();
-        GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
-        GL.Translate(0, 0, 20);
 
-        switch (MainWindow.RenderingSettings.light)
+        GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
+        switch (MainWindow.RenderingSettings.lightMode)
         {
             case 0:
                 EnableLight0();
@@ -491,16 +556,22 @@ public static class ExampleScene
             case 2:
                 EnableLight2();
                 break;
+            case 3:
+                EnableLight3();
+                break;
+            case 4:
+                EnableLight4();
+                break;
+            case 5:
+                EnableLight5();
+                break;
         }
 
-
-        GL.Color3(Color.White);
-        ShowSun(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();
 
-        // GL.PushMatrix();
-        // ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
-        // GL.PopMatrix();
+        GL.PushMatrix();
+        ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
+        GL.PopMatrix();
 
         GL.Scale(_renderingReplicatedFigure3D.ScaleVector[0], _renderingReplicatedFigure3D.ScaleVector[1],
             _renderingReplicatedFigure3D.ScaleVector[2]);
@@ -512,21 +583,26 @@ public static class ExampleScene
         // GL.Rotate(4 * RenderingSun.SunPosition, 1, 1, 0);
         // GL.Rotate(2 * RenderingSun.SunPosition, 1, 0, 0);
 
-        GL.Translate(0, 0, -1);
 
         if (MainWindow.RenderingSettings.IsObjectVisible)
         {
+            GL.PushMatrix();
             Show3d(MainWindow.RenderingSettings.IsTexturesVisible);
+            GL.PopMatrix();
         }
 
         if (MainWindow.RenderingSettings.IsCarcaseVisible)
         {
+            GL.PushMatrix();
             Carcase();
+            GL.PopMatrix();
         }
 
         if (MainWindow.RenderingSettings.IsNormalsVisible)
         {
+            GL.PushMatrix();
             ShowNormals();
+            GL.PopMatrix();
         }
 
         GL.PopMatrix();
@@ -534,11 +610,12 @@ public static class ExampleScene
         GL.Disable(EnableCap.Light0);
         GL.Disable(EnableCap.Light1);
         GL.Disable(EnableCap.Light2);
+        GL.Disable(EnableCap.Light3);
         GL.Disable(EnableCap.Light4);
         GL.Disable(EnableCap.Light5);
         GL.Disable(EnableCap.Light6);
         GL.Disable(EnableCap.Light7);
 
-        RenderingSun.SunPosition++;//
+        RenderingSun.SunPosition += RenderingSettings.RotetSun;
     }
 }

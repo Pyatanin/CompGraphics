@@ -86,6 +86,35 @@ public sealed partial class MainWindow
                 ;
                 CameraState.CurrentCameraAngle -= Math.PI * 0.5;
                 break;
+            case Key.D0:
+                RenderingSettings.lightMode = 0;
+                break;
+            case Key.D1:
+                RenderingSettings.lightMode = 1;
+                break;
+            case Key.D2:
+                RenderingSettings.lightMode = 2;
+                break;
+            case Key.D3:
+                RenderingSettings.lightMode = 3;
+                break;
+            case Key.D4:
+                RenderingSettings.lightMode = 4;
+                break;
+            case Key.D5:
+                RenderingSettings.lightMode = 5;
+                break;
+            case Key.E:
+                if (RenderingSettings.RotetSun == 1)
+                {
+                    RenderingSettings.RotetSun = 0;
+                }
+                else
+                if (RenderingSettings.RotetSun == 0)
+                {
+                    RenderingSettings.RotetSun = 1;
+                }
+                break;
         }
     }
 
@@ -103,17 +132,21 @@ public sealed partial class MainWindow
     {
         if (Equals(sender, Light0))
         {
-            RenderingSettings.light = 0;
+            RenderingSettings.lightMode = 0;
         }
 
         if (Equals(sender, Light1))
         {
-            RenderingSettings.light = 1;
+            RenderingSettings.lightMode = 1;
         }
 
         if (Equals(sender, Light2))
         {
-            RenderingSettings.light = 2;
+            RenderingSettings.lightMode = 2;
+        }
+        if (Equals(sender, Light3))
+        {
+            RenderingSettings.lightMode = 3;
         }
 
         if (Equals(sender, Orthogonal))
