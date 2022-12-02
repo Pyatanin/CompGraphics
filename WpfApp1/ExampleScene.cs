@@ -5,6 +5,7 @@ using System.IO;
 using System.Text.Json;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
+using WpfApp1.Light;
 using WpfApp1.Model;
 
 namespace WpfApp1;
@@ -359,32 +360,32 @@ public static class ExampleScene
 
     private static void MoveCamera()
     {
-            if (MainWindow.CameraState.CurrentCameraSpeed != 0)
-            {
-                MainWindow.CameraState.XAxisCameraPosition += Math.Sin(MainWindow.CameraState.CurrentCameraAngle) *
-                                                              MainWindow.CameraState.CurrentCameraSpeed;
-                MainWindow.CameraState.YAxisCameraPosition += Math.Cos(MainWindow.CameraState.CurrentCameraAngle) *
-                                                              MainWindow.CameraState.CurrentCameraSpeed;
-            }
+        if (MainWindow.CameraState.CurrentCameraSpeed != 0)
+        {
+            MainWindow.CameraState.XAxisCameraPosition += Math.Sin(MainWindow.CameraState.CurrentCameraAngle) *
+                                                          MainWindow.CameraState.CurrentCameraSpeed;
+            MainWindow.CameraState.YAxisCameraPosition += Math.Cos(MainWindow.CameraState.CurrentCameraAngle) *
+                                                          MainWindow.CameraState.CurrentCameraSpeed;
+        }
 
-            MainWindow.CameraState.CurrentCameraAngle = -MainWindow.CameraState.VerticalCameraAngle / 180 * Math.PI;
+        MainWindow.CameraState.CurrentCameraAngle = -MainWindow.CameraState.VerticalCameraAngle / 180 * Math.PI;
 
-            if (MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection)
-            {
-                GL.Rotate(-MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
-                GL.Rotate(-MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
-                GL.Translate(-MainWindow.CameraState.XAxisCameraPosition, -MainWindow.CameraState.YAxisCameraPosition,
-                    MainWindow.CameraState.ZAxisCameraPosition);
-            }
-            else
-            {
-                GL.Rotate(MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
-                GL.Rotate(MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
-                GL.Translate(MainWindow.CameraState.XAxisCameraPosition, MainWindow.CameraState.YAxisCameraPosition,
-                    MainWindow.CameraState.ZAxisCameraPosition);
-            }
+        if (MainWindow.RenderingSettings.IsMouseMoveForPerspectiveProjection)
+        {
+            GL.Rotate(-MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+            GL.Rotate(-MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+            GL.Translate(-MainWindow.CameraState.XAxisCameraPosition, -MainWindow.CameraState.YAxisCameraPosition,
+                MainWindow.CameraState.ZAxisCameraPosition);
+        }
+        else
+        {
+            GL.Rotate(MainWindow.CameraState.HorizontalCameraAngle, 1, 0, 0);
+            GL.Rotate(MainWindow.CameraState.VerticalCameraAngle, 0, 0, 1);
+            GL.Translate(MainWindow.CameraState.XAxisCameraPosition, MainWindow.CameraState.YAxisCameraPosition,
+                MainWindow.CameraState.ZAxisCameraPosition);
+        }
 
-            MainWindow.CameraState.CurrentCameraSpeed = 0;
+        MainWindow.CameraState.CurrentCameraSpeed = 0;
     }
 
     private static void MoveMouse()
@@ -406,94 +407,73 @@ public static class ExampleScene
         }
     }
 
-    private static void EnableLight0()
+    private static void EnableLightSource(DirectedLight lightSource)
     {
         GL.Enable(EnableCap.Light0);
-        var pos = new float[] { 0, 0, 10, 0 };
-        var diffuse = new float[] { 0, 0, 1 };
-        
-        GL.Light(LightName.Light0, LightParameter.Position, pos);
-        GL.Light(LightName.Light0, LightParameter.Diffuse, diffuse);
+        GL.Light(LightName.Light0, LightParameter.Position, lightSource.Position);
+        GL.Light(LightName.Light0, LightParameter.Diffuse, lightSource.Color);
     }
 
-    private static void EnableLight1()
+    private static void EnableLightSource(PointLight lightSource)
     {
-        GL.Enable(EnableCap.Light1);
-        var pos = new float[] { 0, 0, 10, 1 };
-        var diffuse = new float[] { 0, 0, 1 };
-        GL.Light(LightName.Light1, LightParameter.Position, pos);
-        GL.Light(LightName.Light1, LightParameter.Diffuse, diffuse);
+        switch (lightSource.LightType)
+        {
+            case LightType.PointLightIntensiveOff:
+            {
+                GL.Enable(EnableCap.Light1);
+                GL.Light(LightName.Light1, LightParameter.Position, lightSource.Position);
+                GL.Light(LightName.Light1, LightParameter.Diffuse, lightSource.Color);
+                break;
+            }
+            case LightType.PointLightIntensiveOn:
+            {
+                GL.Enable(EnableCap.Light2);
+                GL.Light(LightName.Light2, LightParameter.Position, lightSource.Position);
+                GL.Light(LightName.Light2, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light2, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                break;
+            }
+        }
     }
 
-    private static void EnableLight2()
+    private static void EnableLightSource(Spotlight lightSource)
     {
-        GL.Enable(EnableCap.Light2);
-        var pos = new float[] { 0, 0, 10, 1 };
-        var diffuse = new float[] { 0, 1, 0 };
-        GL.Light(LightName.Light2, LightParameter.Position, pos);
-        GL.Light(LightName.Light2, LightParameter.Diffuse, diffuse);
-        GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, 0.01f);
-        GL.Light(LightName.Light2, LightParameter.LinearAttenuation, 0.05f);
-        GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, 0);
-    }
-
-    private static void EnableLight3()
-    {
-        GL.Enable(EnableCap.Light3);
-
-        var pos = new float[] { 0, 0, 10, 1 };
-        var diffuse = new float[] { 1, 0, 0 };
-        var stop = new float[] { 0, 0, -1 };
-
-        GL.Light(LightName.Light3, LightParameter.Position, pos);
-        GL.Light(LightName.Light3, LightParameter.Diffuse, diffuse);
-        GL.Light(LightName.Light3, LightParameter.SpotCutoff, 10);
-        GL.Light(LightName.Light3, LightParameter.SpotDirection, stop);
-    }
-
-    private static void EnableLight4()
-    {
-        GL.Enable(EnableCap.Light4);
-
-        var pos = new float[] { 0, 0, 10, 1 };
-        var diffuse = new float[] { 1, 0, 0 };
-        var stop = new float[] { 0, 0, -1 };
-
-        GL.Light(LightName.Light4, LightParameter.Position, pos);
-        GL.Light(LightName.Light4, LightParameter.Diffuse, diffuse);
-        GL.Light(LightName.Light4, LightParameter.SpotCutoff, 10);
-        GL.Light(LightName.Light4, LightParameter.SpotDirection, stop);
-        GL.Light(LightName.Light4, LightParameter.SpotExponent, 15.0f);
-    }
-
-    private static void EnableLight5()
-    {
-        GL.Enable(EnableCap.Light5);
-        var pos5 = new float[] { 0, 0, 10, 1 };
-        var diffuse5 = new float[] { 0, 1, 0 };
-        GL.Light(LightName.Light5, LightParameter.Position, pos5);
-        GL.Light(LightName.Light5, LightParameter.Diffuse, diffuse5);
-        GL.Light(LightName.Light5, LightParameter.ConstantAttenuation, 0.01f);
-        GL.Light(LightName.Light5, LightParameter.LinearAttenuation, 0.05f);
-        GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, 0);
-
-        GL.Enable(EnableCap.Light6);
-        var pos6 = new float[] { 3, 3, 10, 1 };
-        var diffuse6 = new float[] { 1, 0, 0 };
-        GL.Light(LightName.Light6, LightParameter.Position, pos6);
-        GL.Light(LightName.Light6, LightParameter.Diffuse, diffuse6);
-        GL.Light(LightName.Light6, LightParameter.ConstantAttenuation, 0.01f);
-        GL.Light(LightName.Light6, LightParameter.LinearAttenuation, 0.05f);
-        GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, 0);
-
-        GL.Enable(EnableCap.Light7);
-        var pos7 = new float[] { -3, -3, 10, 1 };
-        var diffuse7 = new float[] { 0, 0, 1 };
-        GL.Light(LightName.Light7, LightParameter.Position, pos7);
-        GL.Light(LightName.Light7, LightParameter.Diffuse, diffuse7);
-        GL.Light(LightName.Light7, LightParameter.ConstantAttenuation, 0.01f);
-        GL.Light(LightName.Light7, LightParameter.LinearAttenuation, 0.05f);
-        GL.Light(LightName.Light7, LightParameter.QuadraticAttenuation, 0);
+        switch (lightSource.LightType)
+        {
+            case LightType.SpotlightIntensiveOff:
+            {
+                GL.Enable(EnableCap.Light3);
+                GL.Light(LightName.Light3, LightParameter.Position, lightSource.Position);
+                GL.Light(LightName.Light3, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light3, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light3, LightParameter.SpotDirection, lightSource.SpotDirection);
+                break;
+            }
+            case LightType.SpotlightIntensiveOn:
+            {
+                GL.Enable(EnableCap.Light4);
+                GL.Light(LightName.Light4, LightParameter.Position, lightSource.Position);
+                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light4, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirection);
+                GL.Light(LightName.Light4, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light4, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light4, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                break;
+            }
+            case LightType.SpotlightIntensiveOnExponent:
+            {
+                GL.Enable(EnableCap.Light4);
+                GL.Light(LightName.Light4, LightParameter.Position, lightSource.Position);
+                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light4, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirection);
+                GL.Light(LightName.Light4, LightParameter.SpotExponent, lightSource.Exponent);
+                break;
+            }
+        }
     }
 
     public static void Render(float alpha = 1.0f)
@@ -550,30 +530,10 @@ public static class ExampleScene
         GL.PushMatrix();
 
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
-        switch (MainWindow.RenderingSettings.lightMode)
-        {
-            case 0:
-                EnableLight0();
-                break;
-            case 1:
-                EnableLight1();
-                break;
-            case 2:
-                EnableLight2();
-                break;
-            case 3:
-                EnableLight3();
-                break;
-            case 4:
-                EnableLight4();
-                break;
-            case 5:
-                EnableLight5();
-                break;
-        }
-
         GL.PopMatrix();
-
+        var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10, 1 }, 10,
+            new float[] { 0, 0, -1 }, 10);
+        EnableLightSource(lightSource);
         GL.PushMatrix();
         ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();
