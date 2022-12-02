@@ -461,15 +461,6 @@ public static class ExampleScene
                 GL.Light(LightName.Light4, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
                 GL.Light(LightName.Light4, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light4, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
-                break;
-            }
-            case LightType.SpotlightIntensiveOnExponent:
-            {
-                GL.Enable(EnableCap.Light4);
-                GL.Light(LightName.Light4, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.Color);
-                GL.Light(LightName.Light4, LightParameter.SpotCutoff, lightSource.SpotCutoff);
-                GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirection);
                 GL.Light(LightName.Light4, LightParameter.SpotExponent, lightSource.Exponent);
                 break;
             }
@@ -531,8 +522,10 @@ public static class ExampleScene
 
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
         GL.PopMatrix();
-        var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10, 1 }, 10,
-            new float[] { 0, 0, -1 }, 10);
+        // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
+        // new float[] { 0, 0, -1 });
+        var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 15,
+            new float[] { 0, 0, -1 }, 0.5f, 1, 0, 0);
         EnableLightSource(lightSource);
         GL.PushMatrix();
         ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);

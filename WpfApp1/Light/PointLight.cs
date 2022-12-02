@@ -14,7 +14,13 @@ public class PointLight
 
     public PointLight(string name, float[] color, float[] position)
     {
-        Position = position;
+        Position = new float[4];
+        for (var i = 0; i < 3; i++)
+        {
+            Position[i] = position[i];
+        }
+
+        Position[^1] = 1;
         Name = name;
         Color = color;
         LightType = LightType.PointLightIntensiveOff;
@@ -22,7 +28,12 @@ public class PointLight
 
     public PointLight(string name, float[] color, float[] position, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
     {
-        Position = position;
+        Position = new float[4];
+        for (var i = 0; i < 3; i++)
+        {
+            Position[i] = position[i];
+        }
+        Position[^1] = 1;
         Name = name;
         Color = color;
         ConstantAttenuation = constantAttenuation;

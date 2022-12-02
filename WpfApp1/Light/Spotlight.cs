@@ -8,16 +8,22 @@ public class Spotlight
     public float[] Color;
     public string Name;
     public LightType LightType;
-    public float ConstantAttenuation = 0;
+    public float ConstantAttenuation = 1;
     public float LinearAttenuation = 0;
     public float QuadraticAttenuation = 0;
     public float SpotCutoff;
-    public float Exponent;
+    public float Exponent = 0;
     public float[] SpotDirection;
 
     public Spotlight(string name, float[] color, float[] position, float spotCutoff, float[] spotDirection)
     {
-        Position = position;
+        Position = new float[4];
+        for (var i = 0; i < 3; i++)
+        {
+            Position[i] = position[i];
+        }
+
+        Position[^1] = 1;
         Name = name;
         Color = color;
         SpotCutoff = spotCutoff;
@@ -26,24 +32,19 @@ public class Spotlight
     }
 
     public Spotlight(string name, float[] color, float[] position, float spotCutoff, float[] spotDirection,
-        float exponent)
+        float exponent, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
     {
-        Position = position;
+        Position = new float[4];
+        for (var i = 0; i < 3; i++)
+        {
+            Position[i] = position[i];
+        }
+        Position[^1] = 1;
         Name = name;
         Color = color;
         SpotCutoff = spotCutoff;
         SpotDirection = spotDirection;
         Exponent = exponent;
-        LightType = LightType.SpotlightIntensiveOnExponent;
-    }
-    public Spotlight(string name, float[] color, float[] position, float spotCutoff, float[] spotDirection,
-        float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
-    {
-        Position = position;
-        Name = name;
-        Color = color;
-        SpotCutoff = spotCutoff;
-        SpotDirection = spotDirection;
         ConstantAttenuation = constantAttenuation;
         LinearAttenuation = linearAttenuation;
         QuadraticAttenuation = quadraticAttenuation;
