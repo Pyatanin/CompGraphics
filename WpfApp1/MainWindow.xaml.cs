@@ -5,6 +5,20 @@ using System.Windows.Input;
 using OpenTK.Wpf;
 using WpfApp1.Model;
 
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.Linq;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+using System.Windows.Controls;
+using System.Windows.Data;
+using System.Windows.Documents;
+using System.Windows.Media;
+using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
+using System.Windows.Shapes;
+
 namespace WpfApp1;
 
 /// <summary>
@@ -19,8 +33,40 @@ public sealed partial class MainWindow
     {
         InitializeComponent();
         var mainSettings = new GLWpfControlSettings { MajorVersion = 2, MinorVersion = 1 };
+        Fields = new ObservableCollection<SearchFieldInfo>();
+        SearchableTypes = new ObservableCollection<Type>()
+        {
+            typeof(User),
+            typeof(Widget)
+        };
+
+        SearchType = SearchableTypes.First();
         OpenTkControl.Start(mainSettings);
     }
+    
+    public ObservableCollection<Type> SearchableTypes { get; }
+    public ObservableCollection<SearchFieldInfo> Fields { get; }
+
+
+    private Type _searchType;
+
+    public Type SearchType
+    {
+        get { return _searchType; }
+        set
+        {
+            _searchType = value;
+            Fields.Clear();
+            foreach (PropertyInfo prop in _searchType.GetProperties())
+            {
+                var searchField = new SearchFieldInfo(prop.Name);
+                Fields.Add(searchField);
+            }
+        }
+    }
+
+    private ICommand _searchCommand;
+    
 
     [DllImport("User32.dll")]
     public static extern bool SetCursorPos(int x, int y);

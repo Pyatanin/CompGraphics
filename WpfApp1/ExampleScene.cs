@@ -410,7 +410,10 @@ public static class ExampleScene
     {
         GL.Enable(EnableCap.Light0);
         var pos = new float[] { 0, 0, 10, 0 };
+        var diffuse = new float[] { 0, 0, 1 };
+        
         GL.Light(LightName.Light0, LightParameter.Position, pos);
+        GL.Light(LightName.Light0, LightParameter.Diffuse, diffuse);
     }
 
     private static void EnableLight1()
