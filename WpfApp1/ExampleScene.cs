@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
+using System.Linq;
 using System.Text.Json;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -13,6 +14,10 @@ namespace WpfApp1;
 /// Example class handling the rendering for OpenGL.
 public static class ExampleScene
 {
+    #region MyRegion
+
+    
+
     private static Figure3D _renderingReplicatedFigure3D;
 
     private static readonly Floor RenderingFloor = new
@@ -406,6 +411,7 @@ public static class ExampleScene
             MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
         }
     }
+    #endregion
 
     private static void EnableLightSource(DirectedLight lightSource)
     {
@@ -480,6 +486,7 @@ public static class ExampleScene
         GL.PushMatrix();
         MoveMouse();
         MoveCamera();
+        
 
         if (MainWindow.RenderingSettings.IsPerspectiveProjectionOn)
         {
@@ -524,9 +531,30 @@ public static class ExampleScene
         GL.PopMatrix();
         // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
         // new float[] { 0, 0, -1 });
-        var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 15,
-            new float[] { 0, 0, -1 }, 0.5f, 1, 0, 0);
-        EnableLightSource(lightSource);
+        foreach (var light in MainWindow.LightItems)
+        {
+            switch (light)
+            {
+                case DirectedLight directedLight:
+                {
+                    EnableLightSource(directedLight);
+                    break;
+                }
+                case PointLight pointLight:
+                {
+                    EnableLightSource(pointLight);
+                    break;
+                }
+                case Spotlight spotlight:
+                {
+                    EnableLightSource(spotlight);
+                    break;
+                }
+                default:
+                    throw new TypeLoadException("No such light type");
+            }
+        }
+        
         GL.PushMatrix();
         ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();

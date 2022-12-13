@@ -3,9 +3,9 @@ namespace WpfApp1.Light;
 
 public class PointLight
 {
-    public float[] Position { get; set; }
-    public float[] Color { get; set; }
-    public string Name { get; set; }
+    public float[] Position { get; set; } = { -1, -1, -1, 0 };
+    public float[] Color { get; set; } = new float[] { 0, 0, 1 };
+    public string Name { get; set; } = "New Light 1";
     public LightType LightType;
 
     public float ConstantAttenuation;
@@ -41,4 +41,10 @@ public class PointLight
         QuadraticAttenuation = quadraticAttenuation;
         LightType = LightType.PointLightIntensiveOn;
     }
+
+    public PointLight(LightType type)
+    {
+        LightType = type;
+    }
+
 }

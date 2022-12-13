@@ -4,16 +4,16 @@ namespace WpfApp1.Light;
 
 public class Spotlight
 {
-    public float[] Position;
-    public float[] Color;
-    public string Name;
+    public float[] Position= { 1, 1, 1, 0 };
+    public float[] Color = new float[] { 1, 0, 0 };
+    public string Name = "New Light 3";
     public LightType LightType;
     public float ConstantAttenuation = 1;
     public float LinearAttenuation = 0;
     public float QuadraticAttenuation = 0;
-    public float SpotCutoff;
+    public float SpotCutoff = 1;
     public float Exponent = 0;
-    public float[] SpotDirection;
+    public float[] SpotDirection = { 0,0,-1 };
 
     public Spotlight(string name, float[] color, float[] position, float spotCutoff, float[] spotDirection)
     {
@@ -49,5 +49,10 @@ public class Spotlight
         LinearAttenuation = linearAttenuation;
         QuadraticAttenuation = quadraticAttenuation;
         LightType = LightType.SpotlightIntensiveOn;
+    }
+
+    public Spotlight(LightType type)
+    {
+        LightType = type;
     }
 }
