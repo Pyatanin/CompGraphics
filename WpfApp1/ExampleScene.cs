@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -414,8 +412,8 @@ public static class ExampleScene
     private static void EnableLightSource(DirectedLight lightSource)
     {
         GL.Enable(EnableCap.Light0);
-        GL.Light(LightName.Light0, LightParameter.Position, lightSource.Position);
-        GL.Light(LightName.Light0, LightParameter.Diffuse, lightSource.Color);
+        GL.Light(LightName.Light0, LightParameter.Position, lightSource.PositionArray);
+        GL.Light(LightName.Light0, LightParameter.Diffuse, lightSource.ColorArray);
     }
 
     private static void EnableLightSource(PointLight lightSource)
@@ -425,15 +423,15 @@ public static class ExampleScene
             case LightType.PointLightIntensiveOff:
             {
                 GL.Enable(EnableCap.Light1);
-                GL.Light(LightName.Light1, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light1, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light1, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light1, LightParameter.Diffuse, lightSource.ColorArray);
                 break;
             }
             case LightType.PointLightIntensiveOn:
             {
                 GL.Enable(EnableCap.Light2);
-                GL.Light(LightName.Light2, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light2, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light2, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light2, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
                 GL.Light(LightName.Light2, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
@@ -449,8 +447,8 @@ public static class ExampleScene
             case LightType.SpotlightIntensiveOff:
             {
                 GL.Enable(EnableCap.Light3);
-                GL.Light(LightName.Light3, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light3, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light3, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light3, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light3, LightParameter.SpotCutoff, lightSource.SpotCutoff);
                 GL.Light(LightName.Light3, LightParameter.SpotDirection, lightSource.SpotDirection);
                 break;
@@ -458,8 +456,8 @@ public static class ExampleScene
             case LightType.SpotlightIntensiveOn:
             {
                 GL.Enable(EnableCap.Light4);
-                GL.Light(LightName.Light4, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light4, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light4, LightParameter.SpotCutoff, lightSource.SpotCutoff);
                 GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirection);
                 GL.Light(LightName.Light4, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
@@ -529,7 +527,7 @@ public static class ExampleScene
         GL.PopMatrix();
         // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
         // new float[] { 0, 0, -1 });
-        foreach (var light in MainWindowVm.LightObjects)
+        foreach (var light in MainWindowVm.LightItems)
         {
             switch (light)
             {

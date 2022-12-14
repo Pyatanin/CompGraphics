@@ -2,10 +2,10 @@
 
 public class SearchFieldInfo
 {
-    public SearchFieldInfo(string name, string value)
+    public SearchFieldInfo(string name, object? value)
     {
         Name = name;
-        Value = value;
+        Value = string.Join(" ", value);
     }
     
     public SearchFieldInfo(string name)
@@ -15,6 +15,5 @@ public class SearchFieldInfo
 
     public string Name { get; }
 
-    public string Value { get; set; } = "";
-
+    public string Value { get; set; }
 }

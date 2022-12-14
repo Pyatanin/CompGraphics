@@ -66,28 +66,30 @@
                 Name="LightComboBox"
                 Grid.Row="0"
                 ItemsSource="{Binding Path=LightItems}"
-                SelectedItem="{Binding Path=SearchType}" />
-            
-            <ItemsControl Grid.Row="1" ItemsSource="{Binding  Path=Fields}">
+                SelectedItem="{Binding Path=SearchType}"
+                />
+
+            <ItemsControl Name = "LightItemsControl" Grid.Row="1" ItemsSource="{Binding  Path=Fields}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Name}" />
-                            <TextBox Width="50" Text="{Binding Path=Value}" />
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <TextBlock Grid.Column="0" FontWeight="Bold" Text="{Binding Path=Name}" Margin="5, 5, 0, 0"/>
+                            <TextBox Grid.Column="1" Name="MyTextBox" Width="Auto" Text="{Binding Path=Value}" Margin="0, 5, 5, 0"/>
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
         </Grid>
-
-
+        
         <StackPanel Grid.Row="4" Grid.Column="0">
-            <Button Command="{Binding Path=SaveLightItem}">Save</Button>
-            <Button Command="{Binding Path=DeleteLightItemCommand}">Delete</Button>
+            <Button Click="SaveLightItemCommand">Save</Button>
+            <Button Click="DeleteLightItemCommand">Delete</Button>
         </StackPanel>
         
-
-
         <glWpfControl:GLWpfControl Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" Grid.RowSpan="5"
                                    x:Name="OpenTkControl"
                                    Ready="OpenTkControl_OnReady"

@@ -1,23 +1,12 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
 using System.Windows.Input;
 using OpenTK.Wpf;
-using WpfApp1.Model;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using WpfApp1.Light;
+using WpfApp1.Model;
 
 namespace WpfApp1;
 
@@ -36,57 +25,67 @@ public sealed partial class MainWindow
         OpenTkControl.Start(mainSettings);
     }
 
-
-    
-
     public void DeleteLightItemAction()
     {
         MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
     }
-
-    private ICommand? _seveLightItemCommand;
-
-    public ICommand SaveLightItemCommand
+    
+    private void SaveLightItemCommand(object sender, RoutedEventArgs e)
     {
-        get { return _seveLightItemCommand ??= new CommandHandler(SaveLightItemAction, () => MainWindowVm.LightItems.Any()); }
+        switch (LightComboBox.SelectedItem)
+        {
+            case DirectedLight directedLight:
+            {
+                var a =LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
+                var value = a[0].Value;
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], value);
+                break;
+            }
+            case PointLight pointLight:
+            {
+                break;
+            }
+            case Spotlight spotlight:
+            {
+                break;
+            }
+            default:
+                throw new TypeLoadException("No such light type");
+        }
     }
-
-    public void SaveLightItemAction()
+    
+    public void DeleteLightItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
     }
 
     public void AddLight0ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(Light.DirectedLight));
-        MainWindowVm.LightObjects.Add(new DirectedLight());
+        MainWindowVm.LightItems.Add(typeof(DirectedLight));
     }
 
     public void AddLight1ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(PointLight));
-        MainWindowVm. LightObjects.Add(new PointLight(Model.LightType.PointLightIntensiveOff));
+        MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOff));
     }
 
 
     public void AddLight2ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(PointLight));
-        MainWindowVm.LightObjects.Add(new PointLight(Model.LightType.PointLightIntensiveOn));
+        MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOn));
     }
 
 
     public void AddLight3ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(Spotlight));
-        MainWindowVm.LightObjects.Add(new Spotlight(Model.LightType.SpotlightIntensiveOff));
+        MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOff));
     }
 
 
     public void AddLight4ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(Spotlight));
-        MainWindowVm.LightObjects.Add(new Spotlight(Model.LightType.SpotlightIntensiveOn));
+        MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOn));
     }
 
     #region Events
@@ -303,4 +302,6 @@ public sealed partial class MainWindow
     }
 
     #endregion
+
+    
 }

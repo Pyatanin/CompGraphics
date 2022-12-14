@@ -1,5 +1,6 @@
-﻿namespace WpfApp1.Model;
-using OpenTK.Graphics.OpenGL;
+﻿using OpenTK.Graphics.OpenGL;
+
+namespace WpfApp1.Model;
 
 public class Sun
 {

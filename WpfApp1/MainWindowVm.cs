@@ -1,25 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using AgentOctal.WpfLib;
 using AgentOctal.WpfLib.Commands;
-using System;
-using System.Runtime.InteropServices;
-using System.Windows;
-using System.Windows.Input;
-using OpenTK.Wpf;
-using WpfApp1.Model;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using System.Reflection;
 using WpfApp1.Light;
-
-
 
 namespace WpfApp1;
 
@@ -27,42 +12,42 @@ public class MainWindowVm : ViewModel
 {
     public MainWindowVm()
     {
-        Fields = new AgentOctal.WpfLib.ObservableCollection<SearchFieldInfo>();
-        LightItems = new AgentOctal.WpfLib.ObservableCollection<Type>()
-        {
-            typeof(Light.DirectedLight),
-        };
-        LightObjects = new List<object>()
+        Fields = new ObservableCollection<SearchFieldInfo>();
+        LightItems = new ObservableCollection<object>
         {
             new DirectedLight()
         };
 
         SearchType = LightItems.First();
     }
+    
+    public static ObservableCollection<object> LightItems { get; set; }
+    public static List<object> LightObjects { get; set; }
+    public ObservableCollection<SearchFieldInfo> Fields { get; }
 
-    public static AgentOctal.WpfLib.ObservableCollection<Type> LightItems { get; set; }
-    public static List<Object> LightObjects { get; set; }
-    public AgentOctal.WpfLib.ObservableCollection<SearchFieldInfo> Fields { get; }
+    private object _searchType;
 
-
-    private Type _searchType;
-
-    public  Type SearchType
+    public object SearchType
     {
-        get { return _searchType; }
+        get => _searchType;
         set
         {
             _searchType = value;
             Fields.Clear();
-            foreach (var prop in _searchType.GetProperties())
+            var props = _searchType.GetType();
+            foreach (var prop in props.GetProperties())
             {
-                var searchField = new SearchFieldInfo(prop.Name);
+                var searchField = new SearchFieldInfo(prop.Name,_searchType.GetType().GetProperty(prop.Name)?.GetValue(_searchType, null));
                 Fields.Add(searchField);
             }
         }
     }
-    
-    private static void GetPropertyValues(Object obj)
+
+    public  void efwef()
+    {
+        SearchType = LightItems.Last();
+    }
+    private static void GetPropertyValues(object obj)
     {
         var t = obj.GetType();
         Console.WriteLine("Type is: {0}", t.Name);
@@ -83,9 +68,9 @@ public class MainWindowVm : ViewModel
 
     public ICommand SearchCommand
     {
-        get { return _searchCommand ?? (_searchCommand = new SimpleCommand((obj) =>
+        get { return _searchCommand ?? (_searchCommand = new SimpleCommand(obj =>
         {
-            WindowManager.ShowMessage(String.Join(", ", Fields.Select(f => $"{f.Name}: {f.Value}")));
+            WindowManager.ShowMessage(string.Join(", ", Fields.Select(f => $"{f.Name}: {f.Value}")));
         })); }
     }
 }

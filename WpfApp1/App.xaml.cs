@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using AgentOctal.WpfLib.Services;
 using AgentOctal.WpfLib.Services.WindowManager;
 
 namespace WpfApp1
@@ -11,7 +12,7 @@ namespace WpfApp1
         private void App_OnStartup(object sender, StartupEventArgs e)
         {
             var vm = new MainWindowVm();
-            AgentOctal.WpfLib.Services.ServiceManager.GetService<IWindowManagerService>().DisplayWindowFor(vm);
+            ServiceManager.GetService<IWindowManagerService>().DisplayWindowFor(vm);
         }
     }
 }
