@@ -16,8 +16,6 @@ public static class ExampleScene
 {
     #region MyRegion
 
-    
-
     private static Figure3D _renderingReplicatedFigure3D;
 
     private static readonly Floor RenderingFloor = new
@@ -531,7 +529,7 @@ public static class ExampleScene
         GL.PopMatrix();
         // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
         // new float[] { 0, 0, -1 });
-        foreach (var light in MainWindow.LightItems)
+        foreach (var light in MainWindowVm.LightObjects)
         {
             switch (light)
             {

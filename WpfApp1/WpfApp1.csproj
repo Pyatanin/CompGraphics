@@ -8,6 +8,7 @@
     </PropertyGroup>
 
     <ItemGroup>
+        <PackageReference Include="AgentOctal.WpfLib" Version="1.2.0" />
         <PackageReference Include="OpenTK" Version="4.6.7" />
         <PackageReference Include="OpenTK.GLWpfControl" Version="4.2.2" />
         <None Update="Texture/*.*" CopyToOutputDirectory="PreserveNewest" />

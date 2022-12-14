@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
-        xmlns:wpfApp1="clr-namespace:WpfApp1"
-        d:DataContext="{d:DesignInstance wpfApp1:MainWindow}"
+        xmlns:local="clr-namespace:WpfApp1"
+        d:DataContext="{d:DesignInstance local:MainWindowVm}"
         mc:Ignorable="d"
         Title="Lab 2"
         Height="600"
@@ -19,7 +19,7 @@
         Cursor="None"
         MouseEnter="MainWindow_OnMouseEnter"
         MouseLeave="MainWindow_OnMouseLeave">
-    <Grid x:Name="MyGrid" KeyDown="OnKeyDown">
+    <Grid x:Name="MyGrid" KeyDown="OnKeyDown" >
 
         <Grid.RowDefinitions>
             <RowDefinition></RowDefinition>
@@ -49,11 +49,6 @@
                 <RowDefinition></RowDefinition>
 
             </Grid.RowDefinitions>
-            <!-- <Button Grid.Row="0" FontSize="10" Command="{Binding Path=AddLight0ItemCommand}">Add New Light 0</Button> -->
-            <!-- <Button Grid.Row="1" FontSize="10" Command="{Binding Path=AddLight1ItemCommand}">Add New Light 1</Button> -->
-            <!-- <Button Grid.Row="2" FontSize="10" Command="{Binding Path=AddLight2ItemCommand}">Add New Light 2</Button> -->
-            <!-- <Button Grid.Row="3" FontSize="10" Command="{Binding Path=AddLight3ItemCommand}">Add New Light 3</Button> -->
-            <!-- <Button Grid.Row="4" FontSize="10" Command="{Binding Path=AddLight4ItemCommand}">Add New Light 4</Button> -->
             <Button Grid.Row="0" FontSize="10" Click="AddLight0ItemCommand">Add New Light 0</Button>
             <Button Grid.Row="1" FontSize="10" Click="AddLight1ItemCommand">Add New Light 1</Button>
             <Button Grid.Row="2" FontSize="10" Click="AddLight2ItemCommand">Add New Light 2</Button>
@@ -61,46 +56,28 @@
             <Button Grid.Row="4" FontSize="10" Click="AddLight4ItemCommand">Add New Light 4</Button>
         </Grid>
         
-        <Grid Grid.Row="1" Grid.Column="0">
+        <Grid Grid.Row="1" Grid.Column="0" Grid.RowSpan="3" ShowGridLines="True">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
             </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
-
+         
             <ComboBox
                 Name="LightComboBox"
-                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                ItemsSource="{Binding Source={x:Static wpfApp1:MainWindow.LightItems}}"
+                Grid.Row="0"
+                ItemsSource="{Binding Path=LightItems}"
                 SelectedItem="{Binding Path=SearchType}" />
             
-            <ItemsControl Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding Source={x:Static wpfApp1:MainWindow.Fields}}">
+            <ItemsControl Grid.Row="1" ItemsSource="{Binding  Path=Fields}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock Text="{Binding Path=Name}" />
-                            <TextBox Width="300" Text="{Binding Path=Value}" />
+                            <TextBox Width="50" Text="{Binding Path=Value}" />
                         </StackPanel>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Label Grid.Row="1" Grid.Column="0" Content="Type:"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Name="LightType" Text="Mylight0"/>
-
-            <Label Grid.Row="2" Grid.Column="0"  Content="Name"/>
-            <TextBox Grid.Row="2" Grid.Column="1" Name="LightName" Text="Mylight"/>
-
-            <Label Grid.Row="3" Grid.Column="0">Position:</Label>
-            <TextBox Grid.Row="3" Grid.Column="1" Name="LightPos" Text="1,1,1"/>
-
-            <Label Grid.Row="4" Grid.Column="0">Color:</Label>
-            <TextBox Grid.Row="4" Grid.Column="1" Name="LightDif" Text="1,1,1"/>
         </Grid>
 
 

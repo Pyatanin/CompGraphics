@@ -3,14 +3,15 @@ namespace WpfApp1.Light;
 
 public class PointLight
 {
+    public string Name { get; set; } = "New Light 1";
+
     public float[] Position { get; set; } = { -1, -1, -1, 0 };
     public float[] Color { get; set; } = new float[] { 0, 0, 1 };
-    public string Name { get; set; } = "New Light 1";
     public LightType LightType;
 
-    public float ConstantAttenuation;
-    public float LinearAttenuation;
-    public float QuadraticAttenuation;
+    public float ConstantAttenuation { get; set; }
+    public float LinearAttenuation { get; set; }
+    public float QuadraticAttenuation { get; set; }
 
     public PointLight(string name, float[] color, float[] position)
     {
