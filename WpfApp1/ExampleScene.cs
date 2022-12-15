@@ -562,6 +562,7 @@ public static class ExampleScene
         GL.PushMatrix();
 
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
+        GL.PopMatrix();
         // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
         // new float[] { 0, 0, -1 });
         foreach (var light in MainWindowVm.LightItems)
@@ -587,7 +588,6 @@ public static class ExampleScene
                     throw new TypeLoadException("No such light type");
             }
         }
-        GL.PopMatrix();
 
 
         GL.PushMatrix();
