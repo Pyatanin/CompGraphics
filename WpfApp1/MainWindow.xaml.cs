@@ -29,63 +29,464 @@ public sealed partial class MainWindow
     {
         MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
     }
-    
+
     private void SaveLightItemCommand(object sender, RoutedEventArgs e)
     {
         switch (LightComboBox.SelectedItem)
         {
-            case DirectedLight directedLight:
+            case DirectedLight:
             {
-                var a =LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
-                var value = a[0].Value;
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], value);
+                var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
+
+                var pos = item[1].Value.Split(", ");
+                if (pos.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                var position = new float[4];
+                if (!float.TryParse(pos[0], out position[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[1], out position[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[2], out position[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                position[3] = 0;
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("PositionArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], position);
+
+                var col = item[2].Value.Split(", ");
+                if (col.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                var colors = new float[3];
+                if (!float.TryParse(col[0], out colors[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[1], out colors[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[2], out colors[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (colors.Any(color => color is < 0 or > 1))
+                {
+                    MessageBox.Show("Color must be in range [0; 1].");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Color")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[2].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ColorArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], colors);
+
                 break;
             }
-            case PointLight pointLight:
+            case PointLight:
             {
+                var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Color")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[2].Value);
+
+                var a = float.Parse(item[3].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ConstantAttenuation")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[3].Value));
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("LinearAttenuation")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[4].Value));
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("QuadraticAttenuation")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[5].Value));
+
+                var pos = item[1].Value.Split(", ");
+                if (pos.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                var position = new float[4];
+                if (!float.TryParse(pos[0], out position[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[1], out position[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[2], out position[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                position[3] = 1;
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("PositionArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], position);
+
+                var col = item[2].Value.Split(", ");
+                var colors = new float[3];
+                if (col.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[0], out colors[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[1], out colors[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[2], out colors[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (colors.Any(color => color is < 0 or > 1))
+                {
+                    MessageBox.Show("Color must be in range [0; 1].");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ColorArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], colors);
+
                 break;
             }
-            case Spotlight spotlight:
+            case Spotlight:
             {
+                var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
+                if (float.TryParse(item[4].Value, out var constantAttentuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ConstantAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], constantAttentuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (float.TryParse(item[5].Value, out var linearAttenuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("LinearAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], linearAttenuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (float.TryParse(item[6].Value, out var quadraticAttenuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("QuadraticAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], quadraticAttenuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (float.TryParse(item[7].Value, out var spotCutoff))
+                {
+                    if (spotCutoff is <= 180 or >= 0)
+                    {
+                        MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("SpotCutoff")
+                            ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], spotCutoff);
+                    }
+                    else
+                    {
+                        MessageBox.Show("SpotCutoff must be in range [0; 180].");
+                        LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (float.TryParse(item[8].Value, out var exponent))
+                {
+                    if (exponent >= 0)
+                    {
+                        MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Exponent")
+                            ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], exponent);
+                    }
+                    else
+                    {
+                        MessageBox.Show("Unable to save parameters, try again.");
+                        LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                        return;
+                    }
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                var pos = item[1].Value.Split(", ");
+                var position = new float[4];
+                if (pos.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[0], out position[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[1], out position[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(pos[2], out position[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                position[3] = 1;
+
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("PositionArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], position);
+
+                var col = item[2].Value.Split(", ");
+                var colors = new float[3];
+                if (col.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[0], out colors[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[1], out colors[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(col[2], out colors[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (colors.Any(color => color is < 0 or > 1))
+                {
+                    MessageBox.Show("Color must be in range [0; 1].");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Color")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[2].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ColorArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], colors);
+
+                var spot = item[3].Value.Split(", ");
+                var spotDir = new float[3];
+                if (spot.Length != 3)
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(spot[0], out spotDir[0]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(spot[1], out spotDir[1]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                if (!float.TryParse(spot[2], out spotDir[2]))
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("SpotDirection")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[3].Value);
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("SpotDirectionArray")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], spotDir);
+
                 break;
             }
             default:
                 throw new TypeLoadException("No such light type");
         }
     }
-    
+
     public void DeleteLightItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
-        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+
+        if (MainWindowVm.LightItems.Any())
+        {
+            LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        }
+        else
+        {
+            DeleteLightItemButton.IsEnabled = false;
+        }
     }
 
     public void AddLight0ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(typeof(DirectedLight));
+        MainWindowVm.LightItems.Add(new DirectedLight(LightType.DirectedLight));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
     }
 
     public void AddLight1ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOff));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
     }
-
 
     public void AddLight2ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOn));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
     }
-
 
     public void AddLight3ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOff));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
     }
-
 
     public void AddLight4ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOn));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
+    }
+    
+    public void AddLight5ItemCommand(object sender, RoutedEventArgs e)
+    {
+        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light5));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
+    }
+    public void AddLight6ItemCommand(object sender, RoutedEventArgs e)
+    {
+        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light6));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
+    }
+    public void AddLight7ItemCommand(object sender, RoutedEventArgs e)
+    {
+        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light7));
+        LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
+        DeleteLightItemButton.IsEnabled = true;
     }
 
     #region Events
@@ -155,32 +556,14 @@ public sealed partial class MainWindow
                     ;
                     CameraState.CurrentCameraAngle -= Math.PI * 0.5;
                     break;
-                case Key.D0:
-                    RenderingSettings.lightMode = 0;
-                    break;
-                case Key.D1:
-                    RenderingSettings.lightMode = 1;
-                    break;
-                case Key.D2:
-                    RenderingSettings.lightMode = 2;
-                    break;
-                case Key.D3:
-                    RenderingSettings.lightMode = 3;
-                    break;
-                case Key.D4:
-                    RenderingSettings.lightMode = 4;
-                    break;
-                case Key.D5:
-                    RenderingSettings.lightMode = 5;
-                    break;
                 case Key.E:
-                    if (RenderingSettings.RotetSun == 1)
+                    if (RenderingSettings.SunRotation == 1)
                     {
-                        RenderingSettings.RotetSun = 0;
+                        RenderingSettings.SunRotation = 0;
                     }
-                    else if (RenderingSettings.RotetSun == 0)
+                    else if (RenderingSettings.SunRotation == 0)
                     {
-                        RenderingSettings.RotetSun = 1;
+                        RenderingSettings.SunRotation = 1;
                     }
 
                     break;
@@ -193,10 +576,16 @@ public sealed partial class MainWindow
             {
                 MyWindow.Cursor = Cursors.None;
                 SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
+                GridLight.IsEnabled = false;
+                SaveLightItemButton.IsEnabled = false;
+                DeleteLightItemButton.IsEnabled = false;
             }
             else
             {
                 MyWindow.Cursor = Cursors.Arrow;
+                GridLight.IsEnabled = true;
+                SaveLightItemButton.IsEnabled = true;
+                DeleteLightItemButton.IsEnabled = true;
             }
         }
     }
@@ -213,72 +602,42 @@ public sealed partial class MainWindow
 
     private void OnClickChangeRenderingSettings(object sender, RoutedEventArgs e)
     {
-        if (Equals(sender, Light0))
-        {
-            RenderingSettings.lightMode = 0;
-        }
-
-        if (Equals(sender, Light1))
-        {
-            RenderingSettings.lightMode = 1;
-        }
-
-        if (Equals(sender, Light2))
-        {
-            RenderingSettings.lightMode = 2;
-        }
-
-        if (Equals(sender, Light3))
-        {
-            RenderingSettings.lightMode = 3;
-        }
-
-        if (Equals(sender, Light4))
-        {
-            RenderingSettings.lightMode = 4;
-        }
-
-        if (Equals(sender, Light5))
-        {
-            RenderingSettings.lightMode = 5;
-        }
-
-        if (Equals(sender, Orthogonal))
+        if (Equals(sender, Orthogonal) || (Equals(sender, OrthogonalMenu)))
         {
             RenderingSettings.IsOrthogonalProjectionOn = true;
         }
 
-        if (Equals(sender, Perspective))
+        if (Equals(sender, Perspective) || Equals(sender, PerspectiveMenu))
         {
             RenderingSettings.IsPerspectiveProjectionOn = true;
         }
 
-        if (Equals(sender, Object))
+        if (Equals(sender, Object) || Equals(sender, ObjectMenu))
         {
             RenderingSettings.IsObjectVisible = !RenderingSettings.IsObjectVisible;
         }
 
-        if (Equals(sender, Skeleton))
+        if (Equals(sender, Skeleton) || Equals(sender, SkeletonMenu))
         {
             RenderingSettings.IsCarcaseVisible = !RenderingSettings.IsCarcaseVisible;
         }
 
-        if (Equals(sender, Textures))
+        if (Equals(sender, Textures) || Equals(sender, TexturesMenu))
         {
             RenderingSettings.IsTexturesVisible = !RenderingSettings.IsTexturesVisible;
         }
 
-        if (Equals(sender, Normals))
+        if (Equals(sender, Normals) || Equals(sender, NormalsMenu))
         {
             RenderingSettings.IsNormalsVisible = !RenderingSettings.IsNormalsVisible;
         }
 
-        if (Equals(sender, Dis))
+        if (Equals(sender, Dis) || Equals(sender, DisMenu))
         {
             RenderingSettings.IsNormalSmoothingDisabled = true;
         }
 
-        if (Equals(sender, En))
+        if (Equals(sender, En) || Equals(sender, EnMenu))
         {
             RenderingSettings.IsNormalSmoothingEnabled = true;
         }
@@ -303,5 +662,8 @@ public sealed partial class MainWindow
 
     #endregion
 
-    
+    private void AddPresetButton_Click(object sender, RoutedEventArgs e)
+    {
+        if (sender is FrameworkElement { ContextMenu: { } } addButton) addButton.ContextMenu.IsOpen = true;
+    }
 }

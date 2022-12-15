@@ -6,5 +6,8 @@ public enum LightType
     PointLightIntensiveOff = 1,
     PointLightIntensiveOn = 2,
     SpotlightIntensiveOff = 3,
-    SpotlightIntensiveOn = 4
+    SpotlightIntensiveOn = 4,
+    Light5 = 5,
+    Light6 = 6,
+    Light7 = 7
 }

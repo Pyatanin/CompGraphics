@@ -4,19 +4,18 @@ namespace WpfApp1.Light;
 
 public class PointLight
 {
-    public string Name { get; set; } = "New Light 1";
-
-    public float[] PositionArray  = { -1, -1, -1, 0 };
-    public string Position { get; set; } = "-1, -1, -1, 0";
-
-    public float[] ColorArray  = { 0, 0, 1 };
-    public string Color { get; set; } = "0, 0, 1";
-
-    public LightType LightType;
+    public string Name { get; set; } = "Point";
+    public string Position { get; set; } = "0, 0, 1";
+    public string Color { get; set; } = "1, 1, 1";
 
     public float ConstantAttenuation { get; set; }
     public float LinearAttenuation { get; set; }
     public float QuadraticAttenuation { get; set; }
+
+    public LightType LightType;
+
+    public float[] PositionArray { get; set; } = { 0, 0, 1, 1 };
+    public float[] ColorArray { get; set; } = { 1, 1, 1 };
 
     public PointLight(string name, float[] colorArray, float[] position)
     {
@@ -32,13 +31,15 @@ public class PointLight
         LightType = LightType.PointLightIntensiveOff;
     }
 
-    public PointLight(string name, float[] colorArray, float[] position, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
+    public PointLight(string name, float[] colorArray, float[] position, float constantAttenuation,
+        float linearAttenuation, float quadraticAttenuation)
     {
         PositionArray = new float[4];
         for (var i = 0; i < 3; i++)
         {
             PositionArray[i] = position[i];
         }
+
         PositionArray[^1] = 1;
         Name = name;
         ColorArray = colorArray;
@@ -52,5 +53,4 @@ public class PointLight
     {
         LightType = type;
     }
-
 }

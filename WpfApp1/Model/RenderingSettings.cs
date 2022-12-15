@@ -12,8 +12,7 @@ public class RenderingSettings
     public bool IsNormalSmoothingDisabled = false;
     public bool IsMouseOnScreen = false;
     public bool IsMouseMoveForPerspectiveProjection = true;
-    public int lightMode = 0;
-    public static float RotetSun = 1;
+    public static float SunRotation = 1;
     
     public  bool IsRenderingUnderControl = true;
 

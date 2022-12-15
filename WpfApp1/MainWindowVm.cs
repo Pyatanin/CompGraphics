@@ -5,6 +5,7 @@ using System.Windows.Input;
 using AgentOctal.WpfLib;
 using AgentOctal.WpfLib.Commands;
 using WpfApp1.Light;
+using WpfApp1.Model;
 
 namespace WpfApp1;
 
@@ -15,7 +16,7 @@ public class MainWindowVm : ViewModel
         Fields = new ObservableCollection<SearchFieldInfo>();
         LightItems = new ObservableCollection<object>
         {
-            new DirectedLight()
+            new DirectedLight(LightType.DirectedLight)
         };
 
         SearchType = LightItems.First();
@@ -38,12 +39,15 @@ public class MainWindowVm : ViewModel
             foreach (var prop in props.GetProperties())
             {
                 var searchField = new SearchFieldInfo(prop.Name,_searchType.GetType().GetProperty(prop.Name)?.GetValue(_searchType, null));
-                Fields.Add(searchField);
+                if (!searchField.Name.Contains("Array"))
+                {
+                    Fields.Add(searchField);
+                }
             }
         }
     }
 
-    public  void efwef()
+    public  void Efwef()
     {
         SearchType = LightItems.Last();
     }
