@@ -61,7 +61,7 @@
             </MenuItem>
         </Menu>
 
-        <Grid x:Name="GridLight" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2">
+        <Grid x:Name="GridLight" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="10">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
                 <RowDefinition Height="*" />

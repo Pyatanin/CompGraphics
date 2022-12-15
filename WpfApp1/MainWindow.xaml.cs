@@ -432,6 +432,7 @@ public sealed partial class MainWindow
         else
         {
             DeleteLightItemButton.IsEnabled = false;
+            SaveLightItemButton.IsEnabled = false;
         }
     }
 
@@ -440,6 +441,7 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new DirectedLight(LightType.DirectedLight));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
 
     public void AddLight1ItemCommand(object sender, RoutedEventArgs e)
@@ -447,6 +449,7 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOff));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
 
     public void AddLight2ItemCommand(object sender, RoutedEventArgs e)
@@ -454,6 +457,7 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new PointLight(LightType.PointLightIntensiveOn));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
 
     public void AddLight3ItemCommand(object sender, RoutedEventArgs e)
@@ -461,6 +465,7 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOff));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
 
     public void AddLight4ItemCommand(object sender, RoutedEventArgs e)
@@ -468,6 +473,7 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new Spotlight(LightType.SpotlightIntensiveOn));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
     
     public void AddLight5ItemCommand(object sender, RoutedEventArgs e)
@@ -475,18 +481,21 @@ public sealed partial class MainWindow
         MainWindowVm.LightItems.Add(new Spotlight(LightType.Light5));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
     public void AddLight6ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new Spotlight(LightType.Light6));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
     public void AddLight7ItemCommand(object sender, RoutedEventArgs e)
     {
         MainWindowVm.LightItems.Add(new Spotlight(LightType.Light7));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
+        SaveLightItemButton.IsEnabled = true;
     }
 
     #region Events

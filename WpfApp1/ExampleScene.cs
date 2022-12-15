@@ -134,7 +134,6 @@ public static class ExampleScene
             GL.PopMatrix();
         }
 
-
         foreach (var edgesNormals in _renderingReplicatedFigure3D.EdgesNormals)
         {
             foreach (var normal in edgesNormals.Normals)
@@ -180,7 +179,8 @@ public static class ExampleScene
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
 
-            GL.BufferData(BufferTarget.ArrayBuffer, RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
                 RenderingFloor.TextureOverlayCoordinates,
                 BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -212,7 +212,7 @@ public static class ExampleScene
         GL.EnableClientState(ArrayCap.NormalArray);
         GL.Color3(Color.White);
 
-        // ОСнование
+        // Основание
         if (texture)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.BasicPlaneTexture.BufferId);
@@ -240,7 +240,7 @@ public static class ExampleScene
 
         GL.PopMatrix();
 
-        //Тиражирование
+        // Тиражирование
         GL.PushMatrix();
         if (texture)
         {
@@ -275,10 +275,13 @@ public static class ExampleScene
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.EdgesTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer,
+                GL.BufferData
+                (
+                    BufferTarget.ArrayBuffer,
                     _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
                     _renderingReplicatedFigure3D.TextureOverlayCoordinates,
-                    BufferUsageHint.StaticDraw);
+                    BufferUsageHint.StaticDraw
+                );
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
                 GL.Enable(EnableCap.Texture2D);
@@ -328,13 +331,15 @@ public static class ExampleScene
 
         for (var i = 0; i < _renderingReplicatedFigure3D.ReplicatedPlane.Length; i += 3)
         {
-            GL.Vertex3(_renderingReplicatedFigure3D.ReplicatedPlane[i],
+            GL.Vertex3
+            (
+                _renderingReplicatedFigure3D.ReplicatedPlane[i],
                 _renderingReplicatedFigure3D.ReplicatedPlane[i + 1],
-                _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]);
+                _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]
+            );
         }
 
         GL.End();
-
 
         foreach (var edge in _renderingReplicatedFigure3D.Edges)
         {
@@ -517,7 +522,6 @@ public static class ExampleScene
         MoveMouse();
         MoveCamera();
 
-
         if (MainWindow.RenderingSettings.IsPerspectiveProjectionOn)
         {
             GL.MatrixMode(MatrixMode.Projection);
@@ -554,11 +558,10 @@ public static class ExampleScene
 
         #endregion
 
-        //Солнышко
+        // Солнышко
         GL.PushMatrix();
 
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
-        GL.PopMatrix();
         // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
         // new float[] { 0, 0, -1 });
         foreach (var light in MainWindowVm.LightItems)
@@ -584,21 +587,30 @@ public static class ExampleScene
                     throw new TypeLoadException("No such light type");
             }
         }
+        GL.PopMatrix();
+
 
         GL.PushMatrix();
         ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();
 
-        GL.Scale(_renderingReplicatedFigure3D.ScaleVector[0], _renderingReplicatedFigure3D.ScaleVector[1],
-            _renderingReplicatedFigure3D.ScaleVector[2]);
-        GL.Rotate(_renderingReplicatedFigure3D.RotationVector[0], _renderingReplicatedFigure3D.RotationVector[1],
+        GL.Scale
+        (
+            _renderingReplicatedFigure3D.ScaleVector[0],
+            _renderingReplicatedFigure3D.ScaleVector[1],
+            _renderingReplicatedFigure3D.ScaleVector[2]
+        );
+        GL.Rotate
+        (
+            _renderingReplicatedFigure3D.RotationVector[0],
+            _renderingReplicatedFigure3D.RotationVector[1],
             _renderingReplicatedFigure3D.RotationVector[2],
-            _renderingReplicatedFigure3D.RotationVector[3]);
+            _renderingReplicatedFigure3D.RotationVector[3]
+        );
 
         // GL.Rotate(3 * RenderingSun.SunPosition, 0, 0, 1);
         // GL.Rotate(4 * RenderingSun.SunPosition, 1, 1, 0);
         // GL.Rotate(2 * RenderingSun.SunPosition, 1, 0, 0);
-
 
         if (MainWindow.RenderingSettings.IsObjectVisible)
         {
