@@ -20,17 +20,17 @@ public static class ExampleScene
     (
         new float[]
         {
-            10, 10, -1,
-            10, -10, -1,
-            -10, -10, -1,
+            10, 10, -2,
+            10, -10, -2,
+            -10, -10, -2,
             -10, 10, -1
         },
         new float[]
         {
-            1, 0,
+            10, 0,
             0, 0,
-            0, 1,
-            1, 1
+            0, 10,
+            10, 10
         },
         "Texture/Up.jpg"
     );
@@ -176,7 +176,6 @@ public static class ExampleScene
 
     private static void ShowFloor(bool texture)
     {
-        GL.Color3(Color.White);
         if (texture)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
@@ -192,12 +191,7 @@ public static class ExampleScene
         }
 
         GL.EnableClientState(ArrayCap.VertexArray);
-        GL.EnableClientState(ArrayCap.NormalArray);
-        GL.PushMatrix();
-
         GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingFloor.Coordinates);
-        GL.NormalPointer(NormalPointerType.Float, 0, RenderingFloor.FloorNormals.ToArray());
-
         GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
         if (texture)
         {
@@ -205,11 +199,7 @@ public static class ExampleScene
             RenderingFloor.FloorTexture.Unbind();
         }
 
-        GL.PopMatrix();
-
         GL.DisableClientState(ArrayCap.VertexArray);
-        GL.DisableClientState(ArrayCap.NormalArray);
-
         if (texture)
         {
             GL.DisableClientState(ArrayCap.TextureCoordArray);
