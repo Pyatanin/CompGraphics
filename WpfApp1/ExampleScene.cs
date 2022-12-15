@@ -628,9 +628,9 @@ public static class ExampleScene
         GL.PopMatrix();
 
 
-        GL.PushMatrix();
-        ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
-        GL.PopMatrix();
+        // GL.PushMatrix();
+        // ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
+        // GL.PopMatrix();
 
         GL.Scale
         (
