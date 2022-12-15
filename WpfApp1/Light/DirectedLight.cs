@@ -4,24 +4,30 @@ namespace WpfApp1.Light;
 
 public class DirectedLight
 {
-    public string Name { get; set; } = "New Light 0";
-    public float[] Position { get; set; } = new float[] { 0, 0, 1, 0 };
-    public float[] Color { get; set; } = new float[] { 1, 1, 1 };
-    public LightType LightType = LightType.DirectedLight;
+    public string Name { get; set; } = "Directed";
+    public string Position { get; set; } = "0, 0, 10";
+    public string Color { get; set; } = "1, 1, 1";
 
-    public DirectedLight(string name, float[] color, float[] position)
+    public float[] PositionArray { get; set; } = { 0, 0, 10, 0 };
+    public float[] ColorArray { get; set; } = { 1, 1, 1 };
+
+    public LightType LightType { get; set; } = LightType.DirectedLight;
+
+    public DirectedLight(string name, float[] colorArray, float[] position)
     {
-        Position = new float[4];
+        PositionArray = new float[4];
         for (var i = 0; i < 3; i++)
         {
-            Position[i] = position[i];
+            PositionArray[i] = position[i];
         }
-        Position[^1] = 0;
+
+        PositionArray[^1] = 0;
         Name = name;
-        Color = color;
+        ColorArray = colorArray;
     }
 
-    public DirectedLight()
+    public DirectedLight(LightType type)
     {
+        LightType = type;
     }
 }

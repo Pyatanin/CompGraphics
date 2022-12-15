@@ -1,41 +1,48 @@
 ﻿using WpfApp1.Model;
+
 namespace WpfApp1.Light;
 
 public class PointLight
 {
-    public float[] Position { get; set; } = { -1, -1, -1, 0 };
-    public float[] Color { get; set; } = new float[] { 0, 0, 1 };
-    public string Name { get; set; } = "New Light 1";
-    public LightType LightType;
+    public string Name { get; set; } = "Point";
+    public string Position { get; set; } = "0, 0, 10";
+    public string Color { get; set; } = "0, 1, 0";
 
-    public float ConstantAttenuation;
-    public float LinearAttenuation;
-    public float QuadraticAttenuation;
+    public float ConstantAttenuation { get; set; } = 0.01f;
+    public float LinearAttenuation { get; set; } = 0.05f;
+    public float QuadraticAttenuation { get; set; } = 0;
 
-    public PointLight(string name, float[] color, float[] position)
+    public LightType LightType { get; set; }
+
+    public float[] PositionArray { get; set; } = { 0, 0, 10, 1 };
+    public float[] ColorArray { get; set; } = { 0, 1, 0 };
+
+    public PointLight(string name, float[] colorArray, float[] position)
     {
-        Position = new float[4];
+        PositionArray = new float[4];
         for (var i = 0; i < 3; i++)
         {
-            Position[i] = position[i];
+            PositionArray[i] = position[i];
         }
 
-        Position[^1] = 1;
+        PositionArray[^1] = 1;
         Name = name;
-        Color = color;
+        ColorArray = colorArray;
         LightType = LightType.PointLightIntensiveOff;
     }
 
-    public PointLight(string name, float[] color, float[] position, float constantAttenuation, float linearAttenuation, float quadraticAttenuation)
+    public PointLight(string name, float[] colorArray, float[] position, float constantAttenuation,
+        float linearAttenuation, float quadraticAttenuation)
     {
-        Position = new float[4];
+        PositionArray = new float[4];
         for (var i = 0; i < 3; i++)
         {
-            Position[i] = position[i];
+            PositionArray[i] = position[i];
         }
-        Position[^1] = 1;
+
+        PositionArray[^1] = 1;
         Name = name;
-        Color = color;
+        ColorArray = colorArray;
         ConstantAttenuation = constantAttenuation;
         LinearAttenuation = linearAttenuation;
         QuadraticAttenuation = quadraticAttenuation;
@@ -46,5 +53,4 @@ public class PointLight
     {
         LightType = type;
     }
-
 }

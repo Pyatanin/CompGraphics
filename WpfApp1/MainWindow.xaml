@@ -5,8 +5,8 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:glWpfControl="clr-namespace:OpenTK.Wpf;assembly=GLWpfControl"
-        xmlns:wpfApp1="clr-namespace:WpfApp1"
-        d:DataContext="{d:DesignInstance wpfApp1:MainWindow}"
+        xmlns:local="clr-namespace:WpfApp1"
+        d:DataContext="{d:DesignInstance local:MainWindowVm}"
         mc:Ignorable="d"
         Title="Lab 2"
         Height="600"
@@ -22,99 +22,114 @@
     <Grid x:Name="MyGrid" KeyDown="OnKeyDown">
 
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
-            <RowDefinition></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
+            <RowDefinition Height="*"></RowDefinition>
+            <RowDefinition Height="Auto"></RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
-            <ColumnDefinition></ColumnDefinition>
+            <ColumnDefinition Width="Auto"></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Grid>
+        <Menu>
+            <MenuItem Header="Объекты отрисовки">
+                <MenuItem x:Name="ObjectMenu" Header="Объект" Click="OnClickChangeRenderingSettings" />
+                <MenuItem x:Name="SkeletonMenu" Header="Каркас объекта" Click="OnClickChangeRenderingSettings" />
+                <MenuItem x:Name="NormalsMenu" Header="Нормали" Click="OnClickChangeRenderingSettings" />
+                <MenuItem x:Name="TexturesMenu" Header="Текстуры" Click="OnClickChangeRenderingSettings" />
+            </MenuItem>
+            <MenuItem Header="Проекция">
+                <MenuItem x:Name="OrthogonalMenu" Header="Ортографическая" Click="OnClickChangeRenderingSettings" />
+                <MenuItem x:Name="PerspectiveMenu" Header="Перспективная " Click="OnClickChangeRenderingSettings" />
+            </MenuItem>
+            <MenuItem Header="Сглаживание нормалей">
+                <MenuItem x:Name="DisMenu" Header="Отключить сглаживание" Click="OnClickChangeRenderingSettings" />
+                <MenuItem x:Name="EnMenu" Header="Включить сглаживание" Click="OnClickChangeRenderingSettings" />
+            </MenuItem>
+            <MenuItem Header="Добавить источник света">
+                <MenuItem Name="MenuItemLight0" Header="Добавить направленный источник света"
+                          Click="AddLight0ItemCommand" />
+                <MenuItem Name="MenuItemLight1" Header="Добавить точечный источник света (без интенсивности)"
+                          Click="AddLight1ItemCommand" />
+                <MenuItem Name="MenuItemLight2" Header="Добавить точечный источник света (с интенсивностью)"
+                          Click="AddLight2ItemCommand" />
+                <MenuItem Name="MenuItemLight3" Header="Добавить прожектор (без интенсивности)"
+                          Click="AddLight3ItemCommand" />
+                <MenuItem Name="MenuItemLight4" Header="Добавить прожектор (с интенсивностью)"
+                          Click="AddLight4ItemCommand" />
+                <MenuItem Name="MenuItemLight5" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight5" Header="Добавить точечный источник света (Light5)" Click="AddLight5ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight5" Header="Добавить прожектор (Light5)" Click="AddLight5ItemCommand" />
+                </MenuItem>
+                <MenuItem Name="MenuItemLight6" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight6" Header="Добавить точечный источник света (Light6)" Click="AddLight6ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight6" Header="Добавить прожектор (Light6)" Click="AddLight6ItemCommand" />
+                </MenuItem>
+                <MenuItem Name="MenuItemLight7" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight7" Header="Добавить точечный источник света (Light7)" Click="AddLight7ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight7" Header="Добавить прожектор (Light7)" Click="AddLight7ItemCommand" />
+                </MenuItem>
 
+            </MenuItem>
+        </Menu>
+
+        <Grid x:Name="GridLight" Grid.Row="1" Grid.Column="0" Grid.RowSpan="2" Margin="10">
             <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
             </Grid.RowDefinitions>
-            <!-- <Button Grid.Row="0" FontSize="10" Command="{Binding Path=AddLight0ItemCommand}">Add New Light 0</Button> -->
-            <!-- <Button Grid.Row="1" FontSize="10" Command="{Binding Path=AddLight1ItemCommand}">Add New Light 1</Button> -->
-            <!-- <Button Grid.Row="2" FontSize="10" Command="{Binding Path=AddLight2ItemCommand}">Add New Light 2</Button> -->
-            <!-- <Button Grid.Row="3" FontSize="10" Command="{Binding Path=AddLight3ItemCommand}">Add New Light 3</Button> -->
-            <!-- <Button Grid.Row="4" FontSize="10" Command="{Binding Path=AddLight4ItemCommand}">Add New Light 4</Button> -->
-            <Button Grid.Row="0" FontSize="10" Click="AddLight0ItemCommand">Add New Light 0</Button>
-            <Button Grid.Row="1" FontSize="10" Click="AddLight1ItemCommand">Add New Light 1</Button>
-            <Button Grid.Row="2" FontSize="10" Click="AddLight2ItemCommand">Add New Light 2</Button>
-            <Button Grid.Row="3" FontSize="10" Click="AddLight3ItemCommand">Add New Light 3</Button>
-            <Button Grid.Row="4" FontSize="10" Click="AddLight4ItemCommand">Add New Light 4</Button>
-        </Grid>
-        
-        <Grid Grid.Row="1" Grid.Column="0">
-            <Grid.RowDefinitions>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-                <RowDefinition></RowDefinition>
-            </Grid.RowDefinitions>
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition></ColumnDefinition>
-                <ColumnDefinition></ColumnDefinition>
-            </Grid.ColumnDefinitions>
 
-            <ComboBox
-                Name="LightComboBox"
-                Grid.Row="0" Grid.Column="0" Grid.ColumnSpan="2"
-                ItemsSource="{Binding Source={x:Static wpfApp1:MainWindow.LightItems}}"
-                SelectedItem="{Binding Path=SearchType}" />
-            
-            <ItemsControl Grid.Row="2" Grid.Column="0" Grid.RowSpan="2" ItemsSource="{Binding Source={x:Static wpfApp1:MainWindow.Fields}}">
+            <StackPanel Grid.Row="0" Orientation="Horizontal">
+                <Label Margin="10, 0, 0, 0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
+                    Источник света
+                </Label>
+
+                <ComboBox
+                    VerticalContentAlignment="Center"
+                    Name="LightComboBox"
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Name"
+                    IsEnabled="False"
+                    SelectionChanged="LightComboBox_OnSelectionChanged"
+                    IsReadOnly="True"
+                    Text="Создайте источник света"
+                    ItemsSource="{Binding Path=LightItems, Mode=TwoWay}"
+                    SelectedItem="{Binding Path=SearchType, Mode=TwoWay}" />
+            </StackPanel>
+
+
+            <ItemsControl Margin="10" Name="LightItemsControl" Grid.Row="1" ItemsSource="{Binding  Path=Fields}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock Text="{Binding Path=Name}" />
-                            <TextBox Width="300" Text="{Binding Path=Value}" />
-                        </StackPanel>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <Border BorderThickness="0.5" BorderBrush="Black">
+                                <TextBlock Margin="5, 0, 0, 0" Grid.Column="0" HorizontalAlignment="Stretch"
+                                           Text="{Binding Path=Name}" />
+                            </Border>
+                            <TextBox Grid.Column="1" Name="MyTextBox" Width="Auto" Text="{Binding Path=Value}" />
+                        </Grid>
                     </DataTemplate>
                 </ItemsControl.ItemTemplate>
             </ItemsControl>
-            <Label Grid.Row="1" Grid.Column="0" Content="Type:"/>
-            <TextBlock Grid.Row="1" Grid.Column="1" Name="LightType" Text="Mylight0"/>
-
-            <Label Grid.Row="2" Grid.Column="0"  Content="Name"/>
-            <TextBox Grid.Row="2" Grid.Column="1" Name="LightName" Text="Mylight"/>
-
-            <Label Grid.Row="3" Grid.Column="0">Position:</Label>
-            <TextBox Grid.Row="3" Grid.Column="1" Name="LightPos" Text="1,1,1"/>
-
-            <Label Grid.Row="4" Grid.Column="0">Color:</Label>
-            <TextBox Grid.Row="4" Grid.Column="1" Name="LightDif" Text="1,1,1"/>
         </Grid>
 
-
-        <StackPanel Grid.Row="4" Grid.Column="0">
-            <Button Command="{Binding Path=SaveLightItem}">Save</Button>
-            <Button Command="{Binding Path=DeleteLightItemCommand}">Delete</Button>
+        <StackPanel Grid.Row="2" Grid.Column="0" Margin="10">
+            <Button x:Name="SaveLightItemButton" IsEnabled="False" Click="SaveLightItemCommand">Сохранить параметры источника света</Button>
+            <Button x:Name="DeleteLightItemButton" IsEnabled="False" Click="DeleteLightItemCommand">Удалить источник света</Button>
         </StackPanel>
-        
 
+        <glWpfControl:GLWpfControl
+            Grid.Column="1" Grid.Row="0"
+            Grid.ColumnSpan="2" Grid.RowSpan="3"
+            x:Name="OpenTkControl"
+            Ready="OpenTkControl_OnReady"
+            Render="OpenTkControl_OnRender" />
 
-        <glWpfControl:GLWpfControl Grid.Column="1" Grid.Row="0" Grid.ColumnSpan="4" Grid.RowSpan="5"
-                                   x:Name="OpenTkControl"
-                                   Ready="OpenTkControl_OnReady"
-                                   Render="OpenTkControl_OnRender" />
         <Grid.ContextMenu>
             <ContextMenu>
                 <MenuItem Header="Объекты отрисовки">
@@ -131,13 +146,24 @@
                     <MenuItem x:Name="Dis" Header="Отключить сглаживание" Click="OnClickChangeRenderingSettings" />
                     <MenuItem x:Name="En" Header="Включить сглаживание" Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
-                <MenuItem Header="Режимы света">
-                    <MenuItem x:Name="Light0" Header="0" Click="OnClickChangeRenderingSettings" />
-                    <MenuItem x:Name="Light1" Header="1" Click="OnClickChangeRenderingSettings" />
-                    <MenuItem x:Name="Light2" Header="2" Click="OnClickChangeRenderingSettings" />
-                    <MenuItem x:Name="Light3" Header="3" Click="OnClickChangeRenderingSettings" />
-                    <MenuItem x:Name="Light4" Header="4" Click="OnClickChangeRenderingSettings" />
-                    <MenuItem x:Name="Light5" Header="5" Click="OnClickChangeRenderingSettings" />
+                <MenuItem Header="Добавить источник света">
+                    <MenuItem Name="ContextMenuItemLight0" Header="Добавить направленный источник света"
+                              Click="AddLight0ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight1"
+                              Header="Добавить точечный источник света (без интенсивности)"
+                              Click="AddLight1ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight2" Header="Добавить точечный источник света (с интенсивностью)"
+                              Click="AddLight2ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight3" Header="Добавить прожектор (без интенсивности)"
+                              Click="AddLight3ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight4" Header="Добавить прожектор (с интенсивностью)"
+                              Click="AddLight4ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight5" Header="Добавить источник света (Light5)"
+                              Click="AddLight5ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight6" Header="Добавить источник света (Light6)"
+                              Click="AddLight6ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight7" Header="Добавить источник света (Light7)"
+                              Click="AddLight7ItemCommand" />
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

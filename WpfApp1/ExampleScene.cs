@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Text.Json;
 using OpenTK.Graphics.OpenGL;
 using OpenTK.Mathematics;
@@ -16,25 +14,23 @@ public static class ExampleScene
 {
     #region MyRegion
 
-    
-
     private static Figure3D _renderingReplicatedFigure3D;
 
     private static readonly Floor RenderingFloor = new
     (
         new float[]
         {
-            1, 1, -1,
-            1, -1, -1,
-            -1, -1, -1,
-            -1, 1, -1
+            10, 10, -2,
+            10, -10, -2,
+            -10, -10, -2,
+            -10, 10, -1
         },
         new float[]
         {
-            1, 0,
+            10, 0,
             0, 0,
-            0, 1,
-            1, 1
+            0, 10,
+            10, 10
         },
         "Texture/Up.jpg"
     );
@@ -138,7 +134,6 @@ public static class ExampleScene
             GL.PopMatrix();
         }
 
-
         foreach (var edgesNormals in _renderingReplicatedFigure3D.EdgesNormals)
         {
             foreach (var normal in edgesNormals.Normals)
@@ -180,12 +175,12 @@ public static class ExampleScene
 
     private static void ShowFloor(bool texture)
     {
-        // GL.Color3(Color.White);
         if (texture)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
 
-            GL.BufferData(BufferTarget.ArrayBuffer, RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
+            GL.BufferData(BufferTarget.ArrayBuffer,
+                RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
                 RenderingFloor.TextureOverlayCoordinates,
                 BufferUsageHint.StaticDraw);
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
@@ -226,7 +221,7 @@ public static class ExampleScene
         GL.EnableClientState(ArrayCap.NormalArray);
         GL.Color3(Color.White);
 
-        // ОСнование
+        // Основание
         if (texture)
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.BasicPlaneTexture.BufferId);
@@ -254,7 +249,7 @@ public static class ExampleScene
 
         GL.PopMatrix();
 
-        //Тиражирование
+        // Тиражирование
         GL.PushMatrix();
         if (texture)
         {
@@ -289,10 +284,13 @@ public static class ExampleScene
             if (texture)
             {
                 GL.BindBuffer(BufferTarget.ArrayBuffer, _renderingReplicatedFigure3D.EdgesTexture.BufferId);
-                GL.BufferData(BufferTarget.ArrayBuffer,
+                GL.BufferData
+                (
+                    BufferTarget.ArrayBuffer,
                     _renderingReplicatedFigure3D.TextureOverlayCoordinates.Length * sizeof(float),
                     _renderingReplicatedFigure3D.TextureOverlayCoordinates,
-                    BufferUsageHint.StaticDraw);
+                    BufferUsageHint.StaticDraw
+                );
                 GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
                 GL.EnableClientState(ArrayCap.TextureCoordArray);
                 GL.Enable(EnableCap.Texture2D);
@@ -342,13 +340,15 @@ public static class ExampleScene
 
         for (var i = 0; i < _renderingReplicatedFigure3D.ReplicatedPlane.Length; i += 3)
         {
-            GL.Vertex3(_renderingReplicatedFigure3D.ReplicatedPlane[i],
+            GL.Vertex3
+            (
+                _renderingReplicatedFigure3D.ReplicatedPlane[i],
                 _renderingReplicatedFigure3D.ReplicatedPlane[i + 1],
-                _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]);
+                _renderingReplicatedFigure3D.ReplicatedPlane[i + 2]
+            );
         }
 
         GL.End();
-
 
         foreach (var edge in _renderingReplicatedFigure3D.Edges)
         {
@@ -411,13 +411,14 @@ public static class ExampleScene
             MainWindow.SetCursorPos((int)Constants.BaseCursorPoint.X, (int)Constants.BaseCursorPoint.Y);
         }
     }
+
     #endregion
 
     private static void EnableLightSource(DirectedLight lightSource)
     {
         GL.Enable(EnableCap.Light0);
-        GL.Light(LightName.Light0, LightParameter.Position, lightSource.Position);
-        GL.Light(LightName.Light0, LightParameter.Diffuse, lightSource.Color);
+        GL.Light(LightName.Light0, LightParameter.Position, lightSource.PositionArray);
+        GL.Light(LightName.Light0, LightParameter.Diffuse, lightSource.ColorArray);
     }
 
     private static void EnableLightSource(PointLight lightSource)
@@ -427,18 +428,49 @@ public static class ExampleScene
             case LightType.PointLightIntensiveOff:
             {
                 GL.Enable(EnableCap.Light1);
-                GL.Light(LightName.Light1, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light1, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light1, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light1, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light2, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
                 break;
             }
             case LightType.PointLightIntensiveOn:
             {
                 GL.Enable(EnableCap.Light2);
-                GL.Light(LightName.Light2, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light2, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light2, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light2, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light2, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
                 GL.Light(LightName.Light2, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light2, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                break;
+            }
+            case LightType.Light5:
+            {
+                GL.Enable(EnableCap.Light5);
+                GL.Light(LightName.Light5, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light5, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light5, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light5, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                break;
+            }case LightType.Light6:
+            {
+                GL.Enable(EnableCap.Light6);
+                GL.Light(LightName.Light6, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light6, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light6, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light6, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                break;
+            }case LightType.Light7:
+            {
+                GL.Enable(EnableCap.Light7);
+                GL.Light(LightName.Light7, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light7, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light7, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light7, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light7, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
                 break;
             }
         }
@@ -451,23 +483,66 @@ public static class ExampleScene
             case LightType.SpotlightIntensiveOff:
             {
                 GL.Enable(EnableCap.Light3);
-                GL.Light(LightName.Light3, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light3, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light3, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light3, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light3, LightParameter.SpotCutoff, lightSource.SpotCutoff);
-                GL.Light(LightName.Light3, LightParameter.SpotDirection, lightSource.SpotDirection);
+                GL.Light(LightName.Light3, LightParameter.SpotDirection, lightSource.SpotDirectionArray);
+                GL.Light(LightName.Light3, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light3, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light3, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                GL.Light(LightName.Light3, LightParameter.SpotExponent, lightSource.Exponent);
                 break;
             }
             case LightType.SpotlightIntensiveOn:
             {
                 GL.Enable(EnableCap.Light4);
-                GL.Light(LightName.Light4, LightParameter.Position, lightSource.Position);
-                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.Color);
+                GL.Light(LightName.Light4, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light4, LightParameter.Diffuse, lightSource.ColorArray);
                 GL.Light(LightName.Light4, LightParameter.SpotCutoff, lightSource.SpotCutoff);
-                GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirection);
+                GL.Light(LightName.Light4, LightParameter.SpotDirection, lightSource.SpotDirectionArray);
                 GL.Light(LightName.Light4, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
                 GL.Light(LightName.Light4, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light4, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
                 GL.Light(LightName.Light4, LightParameter.SpotExponent, lightSource.Exponent);
+                break;
+            }
+            case LightType.Light5:
+            {
+                GL.Enable(EnableCap.Light5);
+                GL.Light(LightName.Light5, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light5, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light5, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light5, LightParameter.SpotDirection, lightSource.SpotDirectionArray);
+                GL.Light(LightName.Light5, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light5, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                GL.Light(LightName.Light5, LightParameter.SpotExponent, lightSource.Exponent);
+                break;
+            }
+            case LightType.Light6:
+            {
+                GL.Enable(EnableCap.Light6);
+                GL.Light(LightName.Light6, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light6, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light6, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light6, LightParameter.SpotDirection, lightSource.SpotDirectionArray);
+                GL.Light(LightName.Light6, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light6, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                GL.Light(LightName.Light6, LightParameter.SpotExponent, lightSource.Exponent);
+                break;
+            }
+            case LightType.Light7:
+            {
+                GL.Enable(EnableCap.Light7);
+                GL.Light(LightName.Light7, LightParameter.Position, lightSource.PositionArray);
+                GL.Light(LightName.Light7, LightParameter.Diffuse, lightSource.ColorArray);
+                GL.Light(LightName.Light7, LightParameter.SpotCutoff, lightSource.SpotCutoff);
+                GL.Light(LightName.Light7, LightParameter.SpotDirection, lightSource.SpotDirectionArray);
+                GL.Light(LightName.Light7, LightParameter.ConstantAttenuation, lightSource.ConstantAttenuation);
+                GL.Light(LightName.Light7, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
+                GL.Light(LightName.Light7, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
+                GL.Light(LightName.Light7, LightParameter.SpotExponent, lightSource.Exponent);
                 break;
             }
         }
@@ -486,7 +561,6 @@ public static class ExampleScene
         GL.PushMatrix();
         MoveMouse();
         MoveCamera();
-        
 
         if (MainWindow.RenderingSettings.IsPerspectiveProjectionOn)
         {
@@ -524,14 +598,11 @@ public static class ExampleScene
 
         #endregion
 
-        //Солнышко
+        // Солнышко
         GL.PushMatrix();
 
         GL.Rotate(RenderingSun.SunPosition, 0, 1, 0);
-        GL.PopMatrix();
-        // var lightSource = new Spotlight("Light", new float[] { 1, 0, 0 }, new float[] { 0, 0, 10 }, 10,
-        // new float[] { 0, 0, -1 });
-        foreach (var light in MainWindow.LightItems)
+        foreach (var light in MainWindowVm.LightItems)
         {
             switch (light)
             {
@@ -554,21 +625,30 @@ public static class ExampleScene
                     throw new TypeLoadException("No such light type");
             }
         }
-        
+        GL.PopMatrix();
+
+
         GL.PushMatrix();
         ShowFloor(MainWindow.RenderingSettings.IsTexturesVisible);
         GL.PopMatrix();
 
-        GL.Scale(_renderingReplicatedFigure3D.ScaleVector[0], _renderingReplicatedFigure3D.ScaleVector[1],
-            _renderingReplicatedFigure3D.ScaleVector[2]);
-        GL.Rotate(_renderingReplicatedFigure3D.RotationVector[0], _renderingReplicatedFigure3D.RotationVector[1],
+        GL.Scale
+        (
+            _renderingReplicatedFigure3D.ScaleVector[0],
+            _renderingReplicatedFigure3D.ScaleVector[1],
+            _renderingReplicatedFigure3D.ScaleVector[2]
+        );
+        GL.Rotate
+        (
+            _renderingReplicatedFigure3D.RotationVector[0],
+            _renderingReplicatedFigure3D.RotationVector[1],
             _renderingReplicatedFigure3D.RotationVector[2],
-            _renderingReplicatedFigure3D.RotationVector[3]);
+            _renderingReplicatedFigure3D.RotationVector[3]
+        );
 
         // GL.Rotate(3 * RenderingSun.SunPosition, 0, 0, 1);
         // GL.Rotate(4 * RenderingSun.SunPosition, 1, 1, 0);
         // GL.Rotate(2 * RenderingSun.SunPosition, 1, 0, 0);
-
 
         if (MainWindow.RenderingSettings.IsObjectVisible)
         {
@@ -602,6 +682,6 @@ public static class ExampleScene
         GL.Disable(EnableCap.Light6);
         GL.Disable(EnableCap.Light7);
 
-        RenderingSun.SunPosition += RenderingSettings.RotetSun;
+        // RenderingSun.SunPosition += RenderingSettings.SunRotation;
     }
 }
