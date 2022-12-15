@@ -5,22 +5,20 @@ namespace WpfApp1.Light;
 public class Spotlight
 {
     public string Name  { get; set; } = "Spot";
-    public string Position { get; set; } = "0, 0, 1";
-    public string Color { get; set; } = "1, 1, 1";
+    public string Position { get; set; } = "0, 0, 10";
+    public string Color { get; set; } = "1, 0, 0";
     public string SpotDirection  { get; set; } = "0, 0, -1";
 
     public float ConstantAttenuation  { get; set; }
     public float LinearAttenuation  { get; set; }
     public float QuadraticAttenuation  { get; set; }
-    public float SpotCutoff  { get; set; }
-    public float Exponent  { get; set; }
+    public float SpotCutoff { get; set; } = 60;
+    public float Exponent { get; set; } = 15.0f;
     
-    public LightType LightType;
+    public LightType LightType { get; set; }
     public float[] SpotDirectionArray  { get; set; } = { 0, 0, -1 };
-    public float[] PositionArray { get; set; }  = { 0, 0, 1, 1 };
-    public float[] ColorArray { get; set; } = { 1, 1, 1 };
-
-
+    public float[] PositionArray { get; set; }  = { 0, 0, 10, 1 };
+    public float[] ColorArray { get; set; } = { 1, 0, 0 };
 
     public Spotlight(string name, float[] colorArray, float[] position, float spotCutoff, float[] spotDirectionArray)
     {

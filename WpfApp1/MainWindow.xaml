@@ -32,7 +32,7 @@
             <ColumnDefinition></ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <Menu >
+        <Menu>
             <MenuItem Header="Объекты отрисовки">
                 <MenuItem x:Name="ObjectMenu" Header="Объект" Click="OnClickChangeRenderingSettings" />
                 <MenuItem x:Name="SkeletonMenu" Header="Каркас объекта" Click="OnClickChangeRenderingSettings" />
@@ -48,16 +48,29 @@
                 <MenuItem x:Name="EnMenu" Header="Включить сглаживание" Click="OnClickChangeRenderingSettings" />
             </MenuItem>
             <MenuItem Header="Добавить источник света">
-                <MenuItem Header="Добавить направленный источник света" Click="AddLight0ItemCommand" />
-                <MenuItem Header="Добавить точечный источник света (без интенсивности)"
+                <MenuItem Name="MenuItemLight0" Header="Добавить направленный источник света"
+                          Click="AddLight0ItemCommand" />
+                <MenuItem Name="MenuItemLight1" Header="Добавить точечный источник света (без интенсивности)"
                           Click="AddLight1ItemCommand" />
-                <MenuItem Header="Добавить точечный источник света (с интенсивностью)"
+                <MenuItem Name="MenuItemLight2" Header="Добавить точечный источник света (с интенсивностью)"
                           Click="AddLight2ItemCommand" />
-                <MenuItem Header="Добавить прожектор (без интенсивности)" Click="AddLight3ItemCommand" />
-                <MenuItem Header="Добавить прожектор (с интенсивностью)" Click="AddLight4ItemCommand" />
-                <MenuItem Header="Добавить прожектор (Light5)" Click="AddLight5ItemCommand" />
-                <MenuItem Header="Добавить прожектор (Light6)" Click="AddLight6ItemCommand" />
-                <MenuItem Header="Добавить прожектор (Light7)" Click="AddLight7ItemCommand" />
+                <MenuItem Name="MenuItemLight3" Header="Добавить прожектор (без интенсивности)"
+                          Click="AddLight3ItemCommand" />
+                <MenuItem Name="MenuItemLight4" Header="Добавить прожектор (с интенсивностью)"
+                          Click="AddLight4ItemCommand" />
+                <MenuItem Name="MenuItemLight5" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight5" Header="Добавить точечный источник света (Light5)" Click="AddLight5ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight5" Header="Добавить прожектор (Light5)" Click="AddLight5ItemCommand" />
+                </MenuItem>
+                <MenuItem Name="MenuItemLight6" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight6" Header="Добавить точечный источник света (Light6)" Click="AddLight6ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight6" Header="Добавить прожектор (Light6)" Click="AddLight6ItemCommand" />
+                </MenuItem>
+                <MenuItem Name="MenuItemLight7" Header="Добавить источник света">
+                    <MenuItem Name="MenuPointItemLight7" Header="Добавить точечный источник света (Light7)" Click="AddLight7ItemCommand" />
+                    <MenuItem Name="MenuSpotItemLight7" Header="Добавить прожектор (Light7)" Click="AddLight7ItemCommand" />
+                </MenuItem>
+
             </MenuItem>
         </Menu>
 
@@ -71,14 +84,21 @@
                 <Label Margin="10, 0, 0, 0" VerticalContentAlignment="Center" HorizontalContentAlignment="Left">
                     Источник света
                 </Label>
+
                 <ComboBox
                     VerticalContentAlignment="Center"
                     Name="LightComboBox"
-                    ItemsSource="{Binding Path=LightItems}"
-                    SelectedItem="{Binding Path=SearchType}" />
+                    DisplayMemberPath="Name"
+                    SelectedValuePath="Name"
+                    IsEnabled="False"
+                    SelectionChanged="LightComboBox_OnSelectionChanged"
+                    IsReadOnly="True"
+                    Text="Создайте источник света"
+                    ItemsSource="{Binding Path=LightItems, Mode=TwoWay}"
+                    SelectedItem="{Binding Path=SearchType, Mode=TwoWay}" />
             </StackPanel>
-                
-            
+
+
             <ItemsControl Margin="10" Name="LightItemsControl" Grid.Row="1" ItemsSource="{Binding  Path=Fields}">
                 <ItemsControl.ItemTemplate>
                     <DataTemplate>
@@ -99,8 +119,8 @@
         </Grid>
 
         <StackPanel Grid.Row="2" Grid.Column="0" Margin="10">
-            <Button x:Name="SaveLightItemButton" Click="SaveLightItemCommand">Сохранить параметры источника света</Button>
-            <Button x:Name="DeleteLightItemButton" Click="DeleteLightItemCommand">Удалить источник света</Button>
+            <Button x:Name="SaveLightItemButton" IsEnabled="False" Click="SaveLightItemCommand">Сохранить параметры источника света</Button>
+            <Button x:Name="DeleteLightItemButton" IsEnabled="False" Click="DeleteLightItemCommand">Удалить источник света</Button>
         </StackPanel>
 
         <glWpfControl:GLWpfControl
@@ -127,15 +147,23 @@
                     <MenuItem x:Name="En" Header="Включить сглаживание" Click="OnClickChangeRenderingSettings" />
                 </MenuItem>
                 <MenuItem Header="Добавить источник света">
-                    <MenuItem Header="Добавить направленный источник света" Click="AddLight0ItemCommand" />
-                    <MenuItem Header="Добавить точечный источник света (без интенсивности)"
+                    <MenuItem Name="ContextMenuItemLight0" Header="Добавить направленный источник света"
+                              Click="AddLight0ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight1"
+                              Header="Добавить точечный источник света (без интенсивности)"
                               Click="AddLight1ItemCommand" />
-                    <MenuItem Header="Добавить точечный источник света (с интенсивностью)" Click="AddLight2ItemCommand" />
-                    <MenuItem Header="Добавить прожектор (без интенсивности)" Click="AddLight3ItemCommand" />
-                    <MenuItem Header="Добавить прожектор (с интенсивностью)" Click="AddLight4ItemCommand" />
-                    <MenuItem Header="Добавить прожектор (Light5)" Click="AddLight5ItemCommand" />
-                    <MenuItem Header="Добавить прожектор (Light6)" Click="AddLight6ItemCommand" />
-                    <MenuItem Header="Добавить прожектор (Light7)" Click="AddLight7ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight2" Header="Добавить точечный источник света (с интенсивностью)"
+                              Click="AddLight2ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight3" Header="Добавить прожектор (без интенсивности)"
+                              Click="AddLight3ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight4" Header="Добавить прожектор (с интенсивностью)"
+                              Click="AddLight4ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight5" Header="Добавить источник света (Light5)"
+                              Click="AddLight5ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight6" Header="Добавить источник света (Light6)"
+                              Click="AddLight6ItemCommand" />
+                    <MenuItem Name="ContextMenuItemLight7" Header="Добавить источник света (Light7)"
+                              Click="AddLight7ItemCommand" />
                 </MenuItem>
             </ContextMenu>
         </Grid.ContextMenu>

@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using AgentOctal.WpfLib;
 using OpenTK.Wpf;
 using WpfApp1.Light;
 using WpfApp1.Model;
@@ -25,13 +27,9 @@ public sealed partial class MainWindow
         OpenTkControl.Start(mainSettings);
     }
 
-    public void DeleteLightItemAction()
-    {
-        MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
-    }
-
     private void SaveLightItemCommand(object sender, RoutedEventArgs e)
     {
+        var select = LightComboBox.SelectedIndex;
         switch (LightComboBox.SelectedItem)
         {
             case DirectedLight:
@@ -39,6 +37,7 @@ public sealed partial class MainWindow
                 var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
+                LightComboBox.SelectedValue = item[0].Value;
 
                 var pos = item[1].Value.Split(", ");
                 if (pos.Length != 3)
@@ -419,10 +418,83 @@ public sealed partial class MainWindow
             default:
                 throw new TypeLoadException("No such light type");
         }
+
+        ObservableCollection<object> Light = new ObservableCollection<object>();
+
+        foreach (var item in LightComboBox.Items)
+        {
+            Light.Add(item);
+        }
+
+        MainWindowVm.LightItems.Clear();
+        foreach (var item in Light)
+        {
+            MainWindowVm.LightItems.Add(item);
+        }
+
+        LightComboBox.SelectedItem = LightComboBox.Items[select];
     }
 
     public void DeleteLightItemCommand(object sender, RoutedEventArgs e)
     {
+        var type = MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("LightType")
+            ?.GetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex]);
+
+        switch (type)
+        {
+            case LightType.DirectedLight:
+            {
+                MenuItemLight0.IsEnabled = true;
+                ContextMenuItemLight0.IsEnabled = true;
+                break;
+            }
+            case LightType.PointLightIntensiveOff:
+            {
+                MenuItemLight1.IsEnabled = true;
+                ContextMenuItemLight1.IsEnabled = true;
+                break;
+            }
+            case LightType.PointLightIntensiveOn:
+            {
+                MenuItemLight2.IsEnabled = true;
+                ContextMenuItemLight2.IsEnabled = true;
+                break;
+            }
+            case LightType.SpotlightIntensiveOff:
+            {
+                MenuItemLight3.IsEnabled = true;
+                ContextMenuItemLight3.IsEnabled = true;
+                break;
+            }
+            case LightType.SpotlightIntensiveOn:
+            {
+                MenuItemLight4.IsEnabled = true;
+                ContextMenuItemLight4.IsEnabled = true;
+                break;
+            }
+            case LightType.Light5:
+            {
+                MenuItemLight5.IsEnabled = true;
+                ContextMenuItemLight5.IsEnabled = true;
+                break;
+            }
+            case LightType.Light6:
+            {
+                MenuItemLight6.IsEnabled = true;
+                ContextMenuItemLight6.IsEnabled = true;
+                break;
+            }
+            case LightType.Light7:
+            {
+                MenuItemLight7.IsEnabled = true;
+                ContextMenuItemLight7.IsEnabled = true;
+                break;
+            }
+            default:
+                throw new TypeLoadException("No such light type");
+        }
+
+
         MainWindowVm.LightItems.RemoveAt(LightComboBox.SelectedIndex);
 
         if (MainWindowVm.LightItems.Any())
@@ -433,8 +505,10 @@ public sealed partial class MainWindow
         {
             DeleteLightItemButton.IsEnabled = false;
             SaveLightItemButton.IsEnabled = false;
+            LightComboBox.IsEnabled = false;
         }
     }
+    #region AddLight
 
     public void AddLight0ItemCommand(object sender, RoutedEventArgs e)
     {
@@ -442,6 +516,9 @@ public sealed partial class MainWindow
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight0.IsEnabled = false;
+        ContextMenuItemLight0.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
 
     public void AddLight1ItemCommand(object sender, RoutedEventArgs e)
@@ -450,6 +527,9 @@ public sealed partial class MainWindow
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight1.IsEnabled = false;
+        ContextMenuItemLight1.IsEnabled = false;  
+        LightComboBox.IsEnabled = true;
     }
 
     public void AddLight2ItemCommand(object sender, RoutedEventArgs e)
@@ -458,6 +538,9 @@ public sealed partial class MainWindow
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight2.IsEnabled = false;
+        ContextMenuItemLight2.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
 
     public void AddLight3ItemCommand(object sender, RoutedEventArgs e)
@@ -466,6 +549,9 @@ public sealed partial class MainWindow
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight3.IsEnabled = false;
+        ContextMenuItemLight3.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
 
     public void AddLight4ItemCommand(object sender, RoutedEventArgs e)
@@ -474,29 +560,54 @@ public sealed partial class MainWindow
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight4.IsEnabled = false;
+        ContextMenuItemLight4.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
-    
+
     public void AddLight5ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light5));
+        if(Equals(sender, MenuPointItemLight5))
+            MainWindowVm.LightItems.Add(new PointLight(LightType.Light5));
+        if(Equals(sender, MenuSpotItemLight5))
+            MainWindowVm.LightItems.Add(new Spotlight(LightType.Light5));
+
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight5.IsEnabled = false;
+        ContextMenuItemLight5.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
+
     public void AddLight6ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light6));
+        if(Equals(sender, MenuPointItemLight6))
+            MainWindowVm.LightItems.Add(new PointLight(LightType.Light6));
+        if(Equals(sender, MenuSpotItemLight6))
+            MainWindowVm.LightItems.Add(new Spotlight(LightType.Light6));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight6.IsEnabled = false;
+        ContextMenuItemLight6.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
+
     public void AddLight7ItemCommand(object sender, RoutedEventArgs e)
     {
-        MainWindowVm.LightItems.Add(new Spotlight(LightType.Light7));
+        if(Equals(sender, MenuPointItemLight7))
+            MainWindowVm.LightItems.Add(new PointLight(LightType.Light7));
+        if(Equals(sender, MenuSpotItemLight7))
+            MainWindowVm.LightItems.Add(new Spotlight(LightType.Light7));
         LightComboBox.SelectedItem = MainWindowVm.LightItems.Last();
         DeleteLightItemButton.IsEnabled = true;
         SaveLightItemButton.IsEnabled = true;
+        MenuItemLight7.IsEnabled = false;
+        ContextMenuItemLight7.IsEnabled = false;
+        LightComboBox.IsEnabled = true;
     }
+    #endregion
 
     #region Events
 
@@ -671,8 +782,8 @@ public sealed partial class MainWindow
 
     #endregion
 
-    private void AddPresetButton_Click(object sender, RoutedEventArgs e)
+    private void LightComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
     {
-        if (sender is FrameworkElement { ContextMenu: { } } addButton) addButton.ContextMenu.IsOpen = true;
+        LightComboBox.SelectedItem = LightComboBox.SelectedItem;
     }
 }

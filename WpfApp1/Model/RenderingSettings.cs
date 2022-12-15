@@ -13,7 +13,6 @@ public class RenderingSettings
     public bool IsMouseOnScreen = false;
     public bool IsMouseMoveForPerspectiveProjection = true;
     public static float SunRotation = 1;
-    
     public  bool IsRenderingUnderControl = true;
 
 }

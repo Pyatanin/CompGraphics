@@ -5,17 +5,17 @@ namespace WpfApp1.Light;
 public class PointLight
 {
     public string Name { get; set; } = "Point";
-    public string Position { get; set; } = "0, 0, 1";
-    public string Color { get; set; } = "1, 1, 1";
+    public string Position { get; set; } = "0, 0, 10";
+    public string Color { get; set; } = "0, 1, 0";
 
-    public float ConstantAttenuation { get; set; }
-    public float LinearAttenuation { get; set; }
-    public float QuadraticAttenuation { get; set; }
+    public float ConstantAttenuation { get; set; } = 0.01f;
+    public float LinearAttenuation { get; set; } = 0.05f;
+    public float QuadraticAttenuation { get; set; } = 0;
 
-    public LightType LightType;
+    public LightType LightType { get; set; }
 
-    public float[] PositionArray { get; set; } = { 0, 0, 1, 1 };
-    public float[] ColorArray { get; set; } = { 1, 1, 1 };
+    public float[] PositionArray { get; set; } = { 0, 0, 10, 1 };
+    public float[] ColorArray { get; set; } = { 0, 1, 0 };
 
     public PointLight(string name, float[] colorArray, float[] position)
     {
