@@ -32,7 +32,14 @@ public static class ExampleScene
             0, 10,
             10, 10
         },
-        "Texture/Up.jpg"
+        "Texture/Up.jpg",
+        new float[]
+        {
+            10, 10, 10,
+            10, -10, 10,
+            -10, -10, 10,
+            -10, 10, 10
+        }
     );
 
     private static readonly Sun RenderingSun = new
@@ -179,10 +186,12 @@ public static class ExampleScene
         {
             GL.BindBuffer(BufferTarget.ArrayBuffer, RenderingFloor.FloorTexture.BufferId);
 
-            GL.BufferData(BufferTarget.ArrayBuffer,
+            GL.BufferData(
+                BufferTarget.ArrayBuffer,
                 RenderingFloor.TextureOverlayCoordinates.Length * sizeof(float),
                 RenderingFloor.TextureOverlayCoordinates,
-                BufferUsageHint.StaticDraw);
+                BufferUsageHint.StaticDraw
+            );
             GL.BindBuffer(BufferTarget.ArrayBuffer, 0);
             GL.EnableClientState(ArrayCap.TextureCoordArray);
             GL.Enable(EnableCap.Texture2D);
@@ -195,7 +204,9 @@ public static class ExampleScene
         GL.PushMatrix();
 
         GL.VertexPointer(3, VertexPointerType.Float, 0, RenderingFloor.Coordinates);
-        GL.NormalPointer(NormalPointerType.Float, 0, RenderingFloor.FloorNormals.ToArray());
+        //GL.NormalPointer(NormalPointerType.Float, 0, RenderingFloor.FloorNormals.ToArray());
+        GL.NormalPointer(NormalPointerType.Float, 0, RenderingFloor.floorNormals);
+
 
         GL.DrawArrays(BeginMode.TriangleFan, 0, 4);
         if (texture)
@@ -454,7 +465,8 @@ public static class ExampleScene
                 GL.Light(LightName.Light5, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light5, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
                 break;
-            }case LightType.Light6:
+            }
+            case LightType.Light6:
             {
                 GL.Enable(EnableCap.Light6);
                 GL.Light(LightName.Light6, LightParameter.Position, lightSource.PositionArray);
@@ -463,7 +475,8 @@ public static class ExampleScene
                 GL.Light(LightName.Light6, LightParameter.LinearAttenuation, lightSource.LinearAttenuation);
                 GL.Light(LightName.Light6, LightParameter.QuadraticAttenuation, lightSource.QuadraticAttenuation);
                 break;
-            }case LightType.Light7:
+            }
+            case LightType.Light7:
             {
                 GL.Enable(EnableCap.Light7);
                 GL.Light(LightName.Light7, LightParameter.Position, lightSource.PositionArray);
@@ -625,6 +638,7 @@ public static class ExampleScene
                     throw new TypeLoadException("No such light type");
             }
         }
+
         GL.PopMatrix();
 
 
