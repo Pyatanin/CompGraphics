@@ -125,18 +125,42 @@ public sealed partial class MainWindow
                 var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
-                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Color")
-                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[2].Value);
 
-                var a = float.Parse(item[3].Value);
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ConstantAttenuation")
-                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[3].Value));
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("LinearAttenuation")
-                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[4].Value));
-                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("QuadraticAttenuation")
-                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], float.Parse(item[5].Value));
+                if (float.TryParse(item[3].Value, out var constantAttentuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ConstantAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], constantAttentuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+                
+                if (float.TryParse(item[4].Value, out var linearAttentuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("LinearAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], linearAttentuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
+                
+                if (float.TryParse(item[5].Value, out var quadraticAttenuation))
+                {
+                    MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("QuadraticAttenuation")
+                        ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], quadraticAttenuation);
+                }
+                else
+                {
+                    MessageBox.Show("Unable to save parameters, try again.");
+                    LightComboBox.SelectedItem = LightComboBox.SelectedItem;
+                    return;
+                }
 
                 var pos = item[1].Value.Split(", ");
                 if (pos.Length != 3)
@@ -170,6 +194,8 @@ public sealed partial class MainWindow
 
                 position[3] = 1;
 
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("PositionArray")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], position);
 
@@ -209,7 +235,8 @@ public sealed partial class MainWindow
                     LightComboBox.SelectedItem = LightComboBox.SelectedItem;
                     return;
                 }
-
+                MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Color")
+                    ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[2].Value);
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ColorArray")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], colors);
 
@@ -218,8 +245,10 @@ public sealed partial class MainWindow
             case Spotlight:
             {
                 var item = LightItemsControl.ItemsSource.Cast<SearchFieldInfo>().ToArray();
+                
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Name")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[0].Value);
+                
                 if (float.TryParse(item[4].Value, out var constantAttentuation))
                 {
                     MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("ConstantAttenuation")
@@ -329,8 +358,7 @@ public sealed partial class MainWindow
                 }
 
                 position[3] = 1;
-
-
+                
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("Position")
                     ?.SetValue(MainWindowVm.LightItems[LightComboBox.SelectedIndex], item[1].Value);
                 MainWindowVm.LightItems[LightComboBox.SelectedIndex].GetType().GetProperty("PositionArray")
